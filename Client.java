@@ -111,23 +111,28 @@ public class Client extends Thread
         // and need_ack remains false.
         this.mutex.lock();
         this.need_ack = false;
-        if (!this.Q.isEmpty()) {
-            message = this.Q.poll();
-            String[] tokens = message.split(" ");
-            String action = tokens[0];
-            node_id = Integer.parseInt(tokens[1]);
-            switch (action) {
-                case "join":
-                    this.join(node_id);
-                    break;
-                case "crash":
-                    break;
-                case "find":
-                    break;
-                case "show":
-                    break;
+        try{
+            if (!this.Q.isEmpty()) {
+                message = this.Q.poll();
+                String[] tokens = message.split(" ");
+                String action = tokens[0];
+                node_id = Integer.parseInt(tokens[1]);
+                switch (action) {
+                    case "join":
+                        this.join(node_id);
+                        break;
+                    case "crash":
+                        break;
+                    case "find":
+                        break;
+                    case "show":
+                        break;
+                }
+                this.need_ack = true;
             }
-            this.need_ack = true;
+        }
+        catch (InterruptedException e) {
+            e.printStackTrace();
         }
         this.mutex.unlock();
 
@@ -143,8 +148,15 @@ public class Client extends Thread
     {
         ProcessInfo new_info = new ProcessInfo(node_id, this.base_port + node_id, this.IP);
         this.nodes.put(node_id, new_info);
-        ServerNode new_node = new ServerNode(new_info.Id, new_info.portNumber);
-        new_node.start();
+        try {
+            ServerNode new_node = new ServerNode(new_info.Id, new_info.portNumber);
+            new_node.start();
+            sleep(1);
+        } catch (IOException e){
+            e.printStackTrace();
+        } catch (InterruptedException e){
+            e.printStackTrace();
+        }
         Runnable sender = new ClientSender(new_info, message);
         new Thread(sender).start();
     }
