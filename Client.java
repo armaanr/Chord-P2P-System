@@ -11,47 +11,21 @@ public class Client extends Thread
     public int min_delay;
     public int max_delay;
     public int base_port;
-    public Map<Integer, boolean> node_status;
+    public InetAddress IP;
+    public Map<Integer, ProcessInfo> nodes;
 
     // For receiving acknowledgements.
     public int receiving_port;
     public ServerSocket receiving_socket;
     boolean need_ack;
 
-    // For sending commands to the replica.
-    public int server_id;
-    public int replica_port;
-    public InetAddress replica_ip;
-    // Stores commands until they can be sent to the replica.
+    // Stores commands until they can be sent to the nodes.
     public Queue<String> Q;
 
     public Lock mutex;
 
     // For handling timeouts.
     public long last_sent;
-
-    /*
-     * If this client's replica crashes, it must connect to the replica
-     * with the next higher id. reset() takes care of this and resends
-     * the last message sent to the crashed replica.
-     */
-    public void reset(String cmd)
-    {
-        System.out.println("Switching to server with next higher id.");
-        Runnable sender;
-
-        this.server_id = ((this.server_id+1) % this.otherProcesses.size());
-        if (this.server_id == 0)
-            this.server_id++;
-        this.replica_port = this.otherProcesses.get(server_id).getPort();
-        this.replica_ip = this.otherProcesses.get(server_id).getIP();
-        // Send the command to the new replica if it should be resent.
-        if (!cmd.equals("drop"))
-        {
-            sender = new ClientSender(this, cmd);
-            new Thread(sender).start();
-        }
-    }
 
     /*
      * Client constructor fills in basic fields from command line.
@@ -65,14 +39,11 @@ public class Client extends Thread
             this.receiving_port = client_port;
             this.receiving_socket = new ServerSocket(client_port, 10);
             this.receiving_socket.setSoTimeout(1000000);
-            // Initializes all nodes as nonexistent.
-            this.node_status = new HashMap<Integer, boolean>();
-            for (int i = 0; i < 256; i++) {
-                node_status.put(i, false);
-            }
             this.Q = new ConcurrentLinkedQueue<String>();
             this.need_ack = false;
             this.mutex = new ReentrantLock(true);
+            this.nodes = new HashMap<Integer, ProcessInfo>();
+            this.IP = InetAddress.getByName("127.0.0.1");
         }
         catch (IOException e)
         {
@@ -88,25 +59,22 @@ public class Client extends Thread
     public int prepare_cmd(String line) throws IOException
     {
         @SuppressWarnings("resource")
-        String cmd;
         int retval = 0;
-        Runnable sender;
 
         String[] tokens = line.split(" ");
 
-        // <new_node_id> <node0 ip> <node0 port>
+        // <command> <new_node_id> <node0 ip> <node0 port>
         if(tokens[0].equals("join") && (tokens.length >= 2))
         {		    	 
             int node_id = Integer.parseInt(tokens[1]);
-            String start_message = node_id
-                                    + " " + "127.0.0.1"
-                                    + " " + Integer.toString(base_port);
+            // Adding Node 0 information.
+            String message =    "join"
+                                + " " + node_id
+                                + " " + "127.0.0.1"
+                                + " " + Integer.toString(base_port);
             this.mutex.lock();
             if (!this.need_ack) {
-                ServerNode new_node = new ServerNode(node_id, this.base_port + node_id);
-                new_node.start();
-                sender = new ClientSender(this, message);
-                new Thread(sender).start();
+                this.join(node_id, message);
             }
             else {
                 this.Q.add(message);
@@ -120,6 +88,65 @@ public class Client extends Thread
         }
         
         return retval;
+    }
+
+    /*
+     * Runs on its own thread to receive and handle acknowledgements from the
+     * replica server.
+     */
+    public void receive_ack() throws IOException
+    {
+        Socket receiver = this.receiving_socket.accept();
+        Runnable sender;
+        String message;
+        int node_id;
+
+        // Receives message.
+        DataInputStream in = new DataInputStream(receiver.getInputStream());
+        String ack = "";
+        ack = in.readUTF();
+
+        // Handles the next message in Q since the ack from the previous was
+        // received. If there is no message to be sent, then nothing happens
+        // and need_ack remains false.
+        this.mutex.lock();
+        this.need_ack = false;
+        if (!this.Q.isEmpty()) {
+            message = this.Q.poll();
+            String[] tokens = message.split(" ");
+            String action = tokens[0];
+            node_id = Integer.parseInt(tokens[1]);
+            switch (action) {
+                case "join":
+                    this.join(node_id);
+                    break;
+                case "crash":
+                    break;
+                case "find":
+                    break;
+                case "show":
+                    break;
+            }
+            this.need_ack = true;
+        }
+        this.mutex.unlock();
+
+        System.out.println(ack);
+
+        receiver.close();
+    }
+
+    /*
+     * Creates a new node, then sends it a join command.
+     */
+    public void join(int node_id, String message)
+    {
+        ProcessInfo new_info = new ProcessInfo(node_id, this.base_port + node_id, this.IP);
+        this.nodes.put(node_id, new_info);
+        ServerNode new_node = new ServerNode(new_info.Id, new_info.portNumber);
+        new_node.start();
+        Runnable sender = new ClientSender(new_info, message);
+        new Thread(sender).start();
     }
 
     /* 
@@ -176,7 +203,7 @@ public class Client extends Thread
                 // Send the command if user presses presses enter.
                 if (c == '\n')
                 {
-                    should_exit = client.prepare_cmd(cmd);
+                    client.prepare_cmd(cmd);
                     cmd = "";
                 }
                 else
@@ -198,39 +225,6 @@ public class Client extends Thread
         }
     }
 
-    /*
-     * Runs on its own thread to receive and handle acknowledgements from the
-     * replica server.
-     */
-    public void receive_ack() throws IOException
-    {
-        Socket receiver = this.receiving_socket.accept();
-        Runnable sender;
-        String cmd;
-
-        // Receives message.
-        DataInputStream in = new DataInputStream(receiver.getInputStream());
-        String ack = "";
-        ack = in.readUTF();
-
-        // Sends the next message in Q since the ack from the previous was
-        // received. If there is no message to be sent, then nothing happens
-        // and need_ack remains false.
-        this.mutex.lock();
-        this.need_ack = false;
-        if (!this.Q.isEmpty()) {
-            cmd = this.Q.poll();
-            sender = new ClientSender(this, cmd);
-            new Thread(sender).start();
-            this.need_ack = true;
-        }
-        this.mutex.unlock();
-
-        System.out.println(ack);
-
-        receiver.close();
-    }
-
     public void run()
     {
         while (true) {
@@ -244,15 +238,6 @@ public class Client extends Thread
                     }
                 }
                 receive_ack();
-            }
-            catch (SocketTimeoutException s) {
-                if (this.scheme.equals("E") && this.need_ack && (System.currentTimeMillis() - this.max_delay*2) > this.last_sent)
-                {
-                    this.need_ack = false;
-                    this.reset("drop");
-                    System.out.println("No ack received");
-                }
-//                break;
             }
             catch (IOException e) {
                 e.printStackTrace();

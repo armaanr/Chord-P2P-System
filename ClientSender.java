@@ -8,31 +8,31 @@ import java.io.*;
 public class ClientSender implements Runnable
 {
     public String cmd;
-    public Client client;
+    public ProcessInfo rec_node;
 
     /*
      * Creates a runnable class that makes a new thread
      * for each command that is sent.
      */
-    public ClientSender(Client client, String cmd)
+    public ClientSender(ProcessInfo rec_node, String cmd)
     {
-        this.client = client;
+        this.rec_node = rec_node;
         this.cmd = cmd;
     }
 
     /* 
      * Sends a cmd to the assigned replica server.
+     * <command> <new node id> <node0 ip> <node0 port> <client port>
      */
     private void send_cmd() throws IOException 
     {
-        this.client.last_sent = System.currentTimeMillis();
-        InetAddress destIp = this.client.replica_ip;
-        int destPort = this.client.replica_port;
+        InetAddress destIp = this.rec_node.IP;
+        int destPort = this.rec_node.portNumber;
            
         Socket sendSock = new Socket(destIp, destPort);	   
         DataOutputStream out = new DataOutputStream(sendSock.getOutputStream());
 
-        out.writeUTF(this.cmd +  " " + this.client.receiving_port);
+        out.writeUTF(this.cmd +  " " + this.rec_node.portNumber);
         
         sendSock.close();
     }
@@ -52,9 +52,6 @@ public class ClientSender implements Runnable
                 }
             }
             send_cmd();
-        }
-        catch (ConnectException c) {
-            this.client.reset(cmd);
         }
         catch (IOException e) {
              e.printStackTrace();
