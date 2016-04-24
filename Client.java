@@ -25,9 +25,6 @@ public class Client extends Thread
 
     public Lock mutex;
 
-    // For handling timeouts.
-    public long last_sent;
-
     /*
      * Client constructor fills in basic fields from command line.
      * The rest of the fields are filled in by the configuration
@@ -84,12 +81,54 @@ public class Client extends Thread
             }
             this.mutex.unlock();
         }
+        else if (tokens[0].equals("show"))
+        {
+            if (tokens[1].equals("all"))
+            {
+                for (int i = 0; i < 256; i++)
+                {
+                    this.mutex.lock();
+                    if (!this.need_ack) {
+                        this.show(i);
+                    }
+                    else {
+                        this.Q.add("show " + Integer.toString(i));
+                        this.need_ack = true;
+                    }
+                    this.mutex.unlock();
+                }
+            }
+            else
+            {
+                int node_id = Integer.parseInt(tokens[1]);
+                this.mutex.lock();
+                if (!this.need_ack) {
+                    this.show(node_id);
+                }
+                else {
+                    this.Q.add("show " + Integer.toString(node_id));
+                    this.need_ack = true;
+                }
+                this.mutex.unlock();
+            }
+        }
         else
         {
             System.out.println("Command not found");
         }
         
         return retval;
+    }
+
+    public void show(int node_id)
+    {
+        ProcessInfo node = this.nodes.get(node_id);
+        if (node != null && node.alive)
+        {
+            Runnable sender = new ClientSender(node, "show " + Integer.toString(node_id));
+            new Thread(sender).start();
+            this.need_ack = true;
+        }
     }
 
     /*
@@ -128,9 +167,11 @@ public class Client extends Thread
                     case "find":
                         break;
                     case "show":
+                        this.show(node_id);
                         break;
                 }
-                this.need_ack = true;
+            // need_ack should now be set in specific functions of case statements.
+//                this.need_ack = true;
             }
         }
         catch (InterruptedException e) {

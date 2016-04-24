@@ -39,6 +39,9 @@ public class ServerNode extends Thread {
 		this.duplicates = new boolean[256];
         this.self_info = new ProcessInfo(Id, port, localhost);
         this.client = client;
+        // Initialized for debugging purposes.
+        for (int i = 0; i < 8; i++)
+            this.fingerTable[i] = this.self_info;
 	}
 	
 	//sends the object to the specified node
@@ -242,6 +245,25 @@ public class ServerNode extends Thread {
         }
     }
 	
+    public void nodeShow(int node_id, String[] tokens)
+    {
+        String keys = "";
+        for (int i = 0; i < 256; i++)
+            if (this.keys[i])
+                keys += " " + Integer.toString(i);
+        String response = Integer.toString(node_id)
+                          + "\n" + "FingerTable: " + this.fingerTable[0].Id
+                          + "," + this.fingerTable[1].Id
+                          + "," + this.fingerTable[2].Id
+                          + "," + this.fingerTable[3].Id
+                          + "," + this.fingerTable[4].Id
+                          + "," + this.fingerTable[5].Id
+                          + "," + this.fingerTable[6].Id
+                          + "," + this.fingerTable[7].Id
+                          + "\n" + "Keys:" + keys + "\n";
+        this.ack_sender(response);
+    }
+
 	//handles received messages
 	private void receiver() throws IOException, ClassNotFoundException {
 		
@@ -263,6 +285,7 @@ public class ServerNode extends Thread {
             case "find":
                 break;
             case "show":
+                nodeShow(node_id, tokens);
                 break;
             case "j":
                 this.find_successor(node_id);
