@@ -129,6 +129,8 @@ public class Client extends Thread
             new Thread(sender).start();
             this.need_ack = true;
         }
+        else
+            System.out.println(Integer.toString(node_id) + " does not exist");
     }
 
     /*
