@@ -89,10 +89,11 @@ public class Client extends Thread
                 {
                     this.mutex.lock();
                     if (!this.need_ack) {
-                        this.show(i);
+                        this.show(i, "N");
                     }
                     else {
-                        this.Q.add("show " + Integer.toString(i));
+                    // N means do not print an error message if node DNE.
+                        this.Q.add("show " + Integer.toString(i) + " N");
                         this.need_ack = true;
                     }
                     this.mutex.unlock();
@@ -103,10 +104,11 @@ public class Client extends Thread
                 int node_id = Integer.parseInt(tokens[1]);
                 this.mutex.lock();
                 if (!this.need_ack) {
-                    this.show(node_id);
+                    this.show(node_id, "P");
                 }
                 else {
-                    this.Q.add("show " + Integer.toString(node_id));
+                    // P means print an error message if node DNE.
+                    this.Q.add("show " + Integer.toString(node_id) + " P");
                     this.need_ack = true;
                 }
                 this.mutex.unlock();
@@ -120,7 +122,7 @@ public class Client extends Thread
         return retval;
     }
 
-    public void show(int node_id)
+    public void show(int node_id, String print)
     {
         ProcessInfo node = this.nodes.get(node_id);
         if (node != null && node.alive)
@@ -130,7 +132,8 @@ public class Client extends Thread
             this.need_ack = true;
         }
         else
-            System.out.println(Integer.toString(node_id) + " does not exist");
+            if (print.equals("P"))
+                System.out.println(Integer.toString(node_id) + " does not exist");
     }
 
     /*
@@ -169,11 +172,9 @@ public class Client extends Thread
                     case "find":
                         break;
                     case "show":
-                        this.show(node_id);
+                        this.show(node_id, tokens[2]);
                         break;
                 }
-            // need_ack should now be set in specific functions of case statements.
-//                this.need_ack = true;
             }
         }
         catch (InterruptedException e) {
