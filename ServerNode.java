@@ -222,7 +222,7 @@ public class ServerNode extends Thread {
         // Checks if current node is node_id's successor.
         // Account for wrap-around.
         if ((this.Id == this.pred.Id) ||
-            (this.pred.Id > this.Id && node_id > this.pred.Id && node_id < this.Id) ||
+            (this.pred.Id > this.Id && node_id > this.pred.Id && node_id < this.Id + 256) ||
             (this.pred.Id < this.Id && node_id < this.Id && node_id > this.pred.Id))
         {
             this.update_as_successor(node_id);
