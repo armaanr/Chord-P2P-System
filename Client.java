@@ -80,8 +80,8 @@ public class Client extends Thread
             }
             else {
                 this.Q.add(message);
+                this.need_ack = true;
             }
-            this.need_ack = true;
             this.mutex.unlock();
         }
         else
@@ -166,6 +166,7 @@ public class Client extends Thread
             }
             Runnable sender = new ClientSender(new_info, message);
             new Thread(sender).start();
+            this.need_ack = true;
          }
     }
 
