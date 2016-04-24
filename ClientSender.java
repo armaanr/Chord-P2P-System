@@ -32,7 +32,7 @@ public class ClientSender implements Runnable
         Socket sendSock = new Socket(destIp, destPort);	   
         DataOutputStream out = new DataOutputStream(sendSock.getOutputStream());
 
-        out.writeUTF(this.cmd +  " " + this.rec_node.portNumber);
+        out.writeUTF(this.cmd);
         
         sendSock.close();
     }

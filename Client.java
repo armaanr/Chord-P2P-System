@@ -18,6 +18,7 @@ public class Client extends Thread
     public int receiving_port;
     public ServerSocket receiving_socket;
     boolean need_ack;
+    public ProcessInfo self_info;
 
     // Stores commands until they can be sent to the nodes.
     public Queue<String> Q;
@@ -44,6 +45,7 @@ public class Client extends Thread
             this.mutex = new ReentrantLock(true);
             this.nodes = new HashMap<Integer, ProcessInfo>();
             this.IP = InetAddress.getByName("127.0.0.1");
+            this.self_info = new ProcessInfo(-1, client_port, this.IP);
         }
         catch (IOException e)
         {
@@ -78,8 +80,8 @@ public class Client extends Thread
             }
             else {
                 this.Q.add(message);
-                this.need_ack = true;
             }
+            this.need_ack = true;
             this.mutex.unlock();
         }
         else
@@ -146,19 +148,25 @@ public class Client extends Thread
      */
     public void join(int node_id, String message)
     {
-        ProcessInfo new_info = new ProcessInfo(node_id, this.base_port + node_id, this.IP);
-        this.nodes.put(node_id, new_info);
-        try {
-            ServerNode new_node = new ServerNode(new_info.Id, new_info.portNumber);
-            new_node.start();
-            sleep(1);
-        } catch (IOException e){
-            e.printStackTrace();
-        } catch (InterruptedException e){
-            e.printStackTrace();
-        }
-        Runnable sender = new ClientSender(new_info, message);
-        new Thread(sender).start();
+        ProcessInfo exists = this.nodes.get(node_id);
+        if (exists != null && exists.alive)
+            System.out.println("Node " + Integer.toString(node_id) + " already exists in the system.");
+        else
+        {
+            ProcessInfo new_info = new ProcessInfo(node_id, this.base_port + node_id, this.IP);
+            this.nodes.put(node_id, new_info);
+            try {
+                ServerNode new_node = new ServerNode(new_info.Id, new_info.portNumber, this.self_info);
+                new_node.start();
+                sleep(1);
+            } catch (IOException e){
+                e.printStackTrace();
+            } catch (InterruptedException e){
+                e.printStackTrace();
+            }
+            Runnable sender = new ClientSender(new_info, message);
+            new Thread(sender).start();
+         }
     }
 
     /* 
