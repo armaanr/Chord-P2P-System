@@ -81,6 +81,14 @@ public class Client extends Thread
             }
             this.mutex.unlock();
         }
+        else if (tokens[0].equals("crash"))
+        {
+            // crash code here
+        }
+        else if (tokens[0].equals("find"))
+        {
+            // find code here
+        }
         else if (tokens[0].equals("show"))
         {
             if (tokens[1].equals("all"))
@@ -124,10 +132,12 @@ public class Client extends Thread
 
     public void show(int node_id, String print)
     {
+//        System.out.println("showing: " + Integer.toString(node_id));
         ProcessInfo node = this.nodes.get(node_id);
         if (node != null && node.alive)
         {
             Runnable sender = new ClientSender(node, "show " + Integer.toString(node_id));
+//            System.out.println("sent: " + "show " + Integer.toString(node_id));
             new Thread(sender).start();
             this.need_ack = true;
         }
@@ -168,8 +178,10 @@ public class Client extends Thread
                         this.join(node_id);
                         break;
                     case "crash":
+                        // crash code here
                         break;
                     case "find":
+                        // find code here
                         break;
                     case "show":
                         this.show(node_id, tokens[2]);
@@ -212,6 +224,20 @@ public class Client extends Thread
             new Thread(sender).start();
             this.need_ack = true;
          }
+    }
+
+    /*
+     * Executes a clean crash on the specified node.
+     */
+    public void crash(int node_id)
+    {
+    }
+
+    /*
+     * Finds the node with the specified key.
+     */
+    public void find(int key_id)
+    {
     }
 
     /* 
