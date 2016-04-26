@@ -167,6 +167,16 @@ public class ServerNode extends Thread {
     }
 
     /*
+     * May not be necessary. Concurrency issues? Probably not...
+     */
+    public void update_as_pred(int node_id)
+    {
+        this.fingerTable[0] = new ProcessInfo(node_id,
+                                              this.node0.portNumber+node_id,
+                                              localhost);
+    }
+
+    /*
      * Called when a node realizes that it is the successor of the
      * new node being added to the network. This node's predecessor
      * and keys will be updated. This node's predecessor, finger table,
@@ -189,8 +199,14 @@ public class ServerNode extends Thread {
             this.duplicates[j % 256] = true;
         }
 
-        // Update predecessor
+        // Notify the current predecessor to update its successor to the newly joined node.
+        // TODO: find out if possible to update successor and predecessor's ft with these messages.
         int old_pred_id = this.pred.Id;
+        String update_message = "p " + Integer.toString(node_id);
+        Runnable update_sender = new ClientSender(this.pred, update_message);
+        new Thread(update_sender).start();
+
+        // Update predecessor to the newly joined node.
         this.pred = new ProcessInfo(node_id,
                                     this.node0.portNumber+node_id,
                                     localhost);
@@ -218,9 +234,9 @@ public class ServerNode extends Thread {
     // Find the closest node that is less than node_id.
     public ProcessInfo closest_preceding_finger(int node_id)
     {
-        for (int i = 7; i >= 0; i--)
-            if (this.ft_info[i].contains(this.fingerTable[i].Id))
-                return this.fingerTable[i];
+//        for (int i = 7; i >= 0; i--)
+//            if (this.ft_info[i].contains(this.fingerTable[i].Id))
+//                return this.fingerTable[i];
         // TODO: Figure out if this is necessary.
         return this.fingerTable[0];
     }
@@ -349,6 +365,8 @@ public class ServerNode extends Thread {
         String message = "";
         message = input.readUTF();
         System.out.println("Server " + Integer.toString(this.Id) + " received: " + message);
+        if (this.pred != null) System.out.println(this.pred.Id);
+        System.out.println(this.fingerTable[0].Id);
         String[] tokens = message.split(" ");
         String action = tokens[0];
         int node_id = Integer.parseInt(tokens[1]);
@@ -375,6 +393,9 @@ public class ServerNode extends Thread {
             case "successor":
 //                System.out.println("my id: " + Integer.toString(this.Id));
                 update_ft(node_id, tokens);
+                break;
+            case "p":
+                update_as_pred(node_id);
                 break;
         }
 //		ObjectInputStream input = new ObjectInputStream(receiver.getInputStream());
