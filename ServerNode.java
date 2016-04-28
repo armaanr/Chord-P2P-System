@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -20,6 +21,7 @@ public class ServerNode extends Thread {
 	int Id;
 	ProcessInfo pred;
 	ProcessInfo[] fingerTable;
+	ProcessInfo[] fingerTable2;
     IntervalInfo[] ft_info;
 	boolean[] keys;
 	boolean[] duplicates;
@@ -27,6 +29,8 @@ public class ServerNode extends Thread {
     ProcessInfo client;
     ProcessInfo node0;
     InetAddress localhost = InetAddress.getByName("127.0.0.1");
+    boolean failStarter;
+    boolean crash;
 	
 	ServerSocket server;
 	
@@ -38,11 +42,13 @@ public class ServerNode extends Thread {
 		this.fingerTable = new ProcessInfo[8];
         // Stores useful interval information for easy comparison.
         this.ft_info = new IntervalInfo[8];
+        this.failStarter = false;
         // Initialized to false.
 		this.keys = new boolean[256];
 		this.duplicates = new boolean[256];
         this.self_info = new ProcessInfo(Id, port, localhost);
         this.client = client;
+        this.crash = false;
         for (int i = 0; i < 8; i++)
         {
             this.ft_info[i] = new IntervalInfo(Id, i);
@@ -74,6 +80,58 @@ public class ServerNode extends Thread {
 		sender.close();
 		
 	}
+	
+    
+    public void ping()
+    {
+    	Socket sock = null;
+    	for(int i = 0; i< fingerTable.length; i++)
+    	{   
+    		try {
+    			sock = new Socket(fingerTable[i].IP, fingerTable[i].portNumber);
+			} catch (IOException e) {
+				int crashed = fingerTable[i].Id;
+				crashUpdater(crashed);
+				this.failStarter = true;
+			}
+    		
+    		try {
+				sock.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	}
+    }
+    
+    public void crashUpdater(int crashedId)
+    {
+    	if(this.failStarter)
+    	{
+    		this.failStarter = false;
+    		String msg = "crash " + crashedId;
+        	ack_sender(msg);
+    	}
+    	
+    	for(int i = 0; i<fingerTable.length ; i++)
+    	{
+    		if(fingerTable[i].Id == crashedId)
+    		{
+    			fingerTable[i] = fingerTable[(i-1)%8];
+    		}
+    	}
+    	
+    	try {
+			Socket sock = new Socket(this.pred.IP, this.pred.portNumber);
+			String message = "fail " + crashedId;
+			DataOutputStream failSend = new DataOutputStream(sock.getOutputStream());
+			failSend.writeUTF(message);
+			sock.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
 	
 	public void nodeJoin(int node_id, String[] tokens)
 	{
@@ -355,6 +413,36 @@ public class ServerNode extends Thread {
                           + "pred: " + Integer.toString(this.pred.Id) + "\n";
         this.ack_sender(response);
     }
+    
+    public void find(int node_id, int key)
+    {
+    	if(keys[key%256] == true)
+    	{
+    		String message = "find " + node_id;
+            ack_sender(message);
+    	}
+    	else
+    	{
+    		ProcessInfo nextNode = null;
+    		for(int i = 0; i< fingerTable.length; i++)
+    		{
+    			if(fingerTable[i].Id <= node_id)
+    			{
+    				if(fingerTable[i].Id > nextNode.Id)
+    				{
+    					nextNode = fingerTable[i];
+    				}
+    			}
+        		
+    		}
+    		
+			String message = "find " + node_id + " " + key+ " " + client.portNumber ;
+    		Runnable sender = new ClientSender(nextNode, message);
+    		new Thread(sender).start();
+    		
+    	}
+    	
+    }
 
 	//handles received messages
 	private void receiver() throws IOException, ClassNotFoundException {
@@ -374,9 +462,16 @@ public class ServerNode extends Thread {
             case "join":
                 this.nodeJoin(node_id, tokens);
                 break;
+            case "fail":
+            	this.crashUpdater(node_id);
             case "crash":
-                break;
+            	this.crash = true;
+            	break;
             case "find":
+            	int node = Integer.parseInt(tokens[1]);
+            	int key = Integer.parseInt(tokens[2]);
+            	client = new ProcessInfo(-1, Integer.parseInt(tokens[3]) , localhost);
+            	this.find(node, key);
                 break;
             case "show":
                 nodeShow(node_id, tokens);
@@ -391,34 +486,13 @@ public class ServerNode extends Thread {
                 this.update_ft_entry(tokens);
                 break;
             case "successor":
-//                System.out.println("my id: " + Integer.toString(this.Id));
                 update_ft(node_id, tokens);
                 break;
             case "p":
                 update_as_pred(node_id);
                 break;
         }
-//		ObjectInputStream input = new ObjectInputStream(receiver.getInputStream());
-//		Object[] message = (Object[]) input.readObject();
-//		int type = (int) message[0];
-//		
-//		System.out.println("type = " + type);
-//		
-//		if(type == 1)
-//		{
-//			@SuppressWarnings("unchecked")
-//			Map<Integer, ProcessInfo> yourMap = (HashMap<Integer, ProcessInfo>) message[1];
-//			
-//			
-//			for(ProcessInfo p : yourMap.values())
-//			System.out.println("Id = "+ p.Id + ", port ="+ p.portNumber + ", inet =" + p.IP.toString());
-//		}
-//		else if(type == 2)
-//		{
-//			String myString = (String) message[1];
-//			
-//			System.out.println(myString);
-//		}
+
 	}
 
     /*
@@ -442,7 +516,11 @@ public class ServerNode extends Thread {
 	      {
 	         try
 	         {	 
+	        	ping();
+	        	
+	        	if(!crash)
 	            receiver();
+	            
 	         }catch(SocketTimeoutException s)
 	         {
 	            System.out.println("Socket timed out!");
