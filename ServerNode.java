@@ -12,6 +12,7 @@ import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import org.omg.CORBA.portable.InputStream;
 
@@ -26,6 +27,8 @@ public class ServerNode extends Thread {
     ProcessInfo self_info;
     ProcessInfo client;
     ProcessInfo node0;
+    int min_delay;
+    int max_delay;
     InetAddress localhost = InetAddress.getByName("127.0.0.1");
 	
 	ServerSocket server;
@@ -77,6 +80,9 @@ public class ServerNode extends Thread {
 	
 	public void nodeJoin(int node_id, String[] tokens)
 	{
+        // Set min/max delay values.
+        this.min_delay = Integer.parseInt(tokens[4]);
+        this.max_delay = Integer.parseInt(tokens[5]);
         // All nodes must be able to contact Node 0.
         this.node0 = new ProcessInfo(0,
                                     Integer.parseInt(tokens[3]),
@@ -109,6 +115,7 @@ public class ServerNode extends Thread {
     public void init_ft(int node_id, ProcessInfo node0)
     {
         String message = "j " + Integer.toString(node_id);
+//        this.delayGenerator();
         Runnable sender = new ClientSender(node0, message);
         new Thread(sender).start();
     }
@@ -140,6 +147,7 @@ public class ServerNode extends Thread {
                     ProcessInfo receiver = new ProcessInfo(requester_id,
                                                             this.node0.portNumber+requester_id,
                                                             localhost);
+//                    this.delayGenerator();
                     Runnable sender = new ClientSender(receiver, message);
                     new Thread(sender).start();
                     break;
@@ -158,6 +166,7 @@ public class ServerNode extends Thread {
                     message = purpose;
                     break;
             }
+//            this.delayGenerator();
             Runnable sender = new ClientSender(cpf, message);
             new Thread(sender).start();
 //            System.out.println("pred_id: " + Integer.toString(this.pred.Id)
@@ -174,6 +183,10 @@ public class ServerNode extends Thread {
         this.fingerTable[0] = new ProcessInfo(node_id,
                                               this.node0.portNumber+node_id,
                                               localhost);
+        for (int i = 0; i < 7; i++)
+            // TODO: Figure out whether the ft[i].id+1 is necessary.
+            if (contains(this.ft_info[i+1].start, this.Id, this.fingerTable[i].Id+1))
+                this.fingerTable[i+1] = this.fingerTable[i];
     }
 
     /*
@@ -203,6 +216,7 @@ public class ServerNode extends Thread {
         // TODO: find out if possible to update successor and predecessor's ft with these messages.
         int old_pred_id = this.pred.Id;
         String update_message = "p " + Integer.toString(node_id);
+//        this.delayGenerator();
         Runnable update_sender = new ClientSender(this.pred, update_message);
         new Thread(update_sender).start();
 
@@ -212,6 +226,17 @@ public class ServerNode extends Thread {
                                     localhost);
         if (old_pred_id == this.Id)
             this.fingerTable[0] = this.pred;
+
+        // Update the successor's finger table while we're at it.
+//        for (int i = 0; i < 7; i++)
+//        {
+//            // TODO: Figure out whether the ft[i].id+1 is necessary.
+//            // Tried changing this to this.pred.Id, don't think its right though.
+//            if (contains(this.pred.Id, this.Id, this.fingerTable[i].Id+1))
+//                this.fingerTable[i+1] = this.pred;
+//            if (contains(this.Id, this.ft_info[i+1].start, this.fingerTable[i].Id+1))
+//                this.fingerTable[i+1] = this.self_info;
+//        }
 
         // Gives new node its predecessor's id, successor's id,
         // successor's finger table, and successor's original duplicates.
@@ -227,6 +252,7 @@ public class ServerNode extends Thread {
                         + "," + Integer.toString(this.fingerTable[6].Id)
                         + "," + Integer.toString(this.fingerTable[7].Id)
                         + duplicates;
+//        this.delayGenerator();
         Runnable sender = new ClientSender(this.pred, message);
         new Thread(sender).start();
     }
@@ -234,9 +260,9 @@ public class ServerNode extends Thread {
     // Find the closest node that is less than node_id.
     public ProcessInfo closest_preceding_finger(int node_id)
     {
-//        for (int i = 7; i >= 0; i--)
-//            if (this.ft_info[i].contains(this.fingerTable[i].Id))
-//                return this.fingerTable[i];
+        for (int i = 7; i >= 0; i--)
+            if (this.ft_info[i].contains(this.fingerTable[i].Id))
+                return this.fingerTable[i];
         // TODO: Figure out if this is necessary.
         return this.fingerTable[0];
     }
@@ -276,6 +302,7 @@ public class ServerNode extends Thread {
                                 + " " + this.ft_info[i+1].start
                                 + " " + Integer.toString(i+1)
                                 + " " + Integer.toString(this.Id);
+//                this.delayGenerator();
                 Runnable sender = new ClientSender(node0, message);
                 new Thread(sender).start();
             }
@@ -505,6 +532,25 @@ public class ServerNode extends Thread {
             return 256 - start + end;
         else
             return start - end;
+    }
+	
+    //generates delays based on min/max delay
+    private void delayGenerator() {
+        if(this.min_delay > 0 && this.max_delay > 0)
+        {
+            if(this.max_delay >= this.min_delay )
+            {
+                Random r = new Random();
+                int randomDelay = r.nextInt(this.max_delay - this.min_delay) + this.min_delay;
+                try {
+                    Thread.sleep(randomDelay);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            else
+                  System.out.println("max is smaller than min");
+        }
     }
 }
 

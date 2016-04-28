@@ -70,7 +70,9 @@ public class Client extends Thread
             String message =    "join"
                                 + " " + node_id
                                 + " " + "127.0.0.1"
-                                + " " + Integer.toString(base_port);
+                                + " " + Integer.toString(base_port)
+                                + " " + Integer.toString(this.min_delay)
+                                + " " + Integer.toString(this.max_delay);
             this.mutex.lock();
             if (!this.need_ack) {
                 this.join(node_id, message);
@@ -100,9 +102,13 @@ public class Client extends Thread
                         this.show(i, "N");
                     }
                     else {
-                    // N means do not print an error message if node DNE.
-                        this.Q.add("show " + Integer.toString(i) + " N");
-                        this.need_ack = true;
+                        // N means do not print an error message if node DNE.
+                        ProcessInfo node = this.nodes.get(i);
+                        if (node != null && node.alive)
+                        {
+                            this.Q.add("show " + Integer.toString(i) + " N");
+                            this.need_ack = true;
+                        }
                     }
                     this.mutex.unlock();
                 }
@@ -132,18 +138,18 @@ public class Client extends Thread
 
     public void show(int node_id, String print)
     {
-//        System.out.println("showing: " + Integer.toString(node_id));
         ProcessInfo node = this.nodes.get(node_id);
         if (node != null && node.alive)
         {
             Runnable sender = new ClientSender(node, "show " + Integer.toString(node_id));
-//            System.out.println("sent: " + "show " + Integer.toString(node_id));
             new Thread(sender).start();
             this.need_ack = true;
         }
         else
+        {
             if (print.equals("P"))
                 System.out.println(Integer.toString(node_id) + " does not exist");
+        }
     }
 
     /*
@@ -167,7 +173,7 @@ public class Client extends Thread
         // and need_ack remains false.
         this.mutex.lock();
         this.need_ack = false;
-        try{
+//        try{
             if (!this.Q.isEmpty()) {
                 message = this.Q.poll();
                 String[] tokens = message.split(" ");
@@ -175,7 +181,7 @@ public class Client extends Thread
                 node_id = Integer.parseInt(tokens[1]);
                 switch (action) {
                     case "join":
-                        this.join(node_id);
+                        this.join(node_id, message);
                         break;
                     case "crash":
                         // crash code here
@@ -188,10 +194,10 @@ public class Client extends Thread
                         break;
                 }
             }
-        }
-        catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        }
+//        catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
         this.mutex.unlock();
 
         System.out.println(ack);
