@@ -415,6 +415,27 @@ public class ServerNode extends Thread {
         this.ack_sender(response);
     }
 
+    
+    public void find(int node_id, int key)
+    {
+        if(keys[key%256] == true)
+        {
+            String message = "find " + this.Id;
+            ack_sender(message);
+        }
+        else
+        {
+            ProcessInfo nextNode = this.closest_preceding_finger(node_id);
+            
+            String message = "find " + node_id + " " + key+ " " + client.portNumber ;
+            this.delayGenerator();
+            Runnable sender = new ClientSender(nextNode, message);
+            new Thread(sender).start();
+            
+        }
+        
+    }
+
 	//handles received messages
 	private void receiver() throws IOException, ClassNotFoundException {
 		
@@ -435,6 +456,10 @@ public class ServerNode extends Thread {
             case "crash":
                 break;
             case "find":
+                int node = Integer.parseInt(tokens[1]);
+                int key = Integer.parseInt(tokens[2]);
+                client = new ProcessInfo(-1, Integer.parseInt(tokens[3]) , localhost);
+                this.find(node, key);
                 break;
             case "show":
                 nodeShow(node_id, tokens);
