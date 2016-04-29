@@ -174,11 +174,15 @@ public class ServerNode extends Thread {
                                                localhost);
                                               
         for (int i = 0; i < 8; i++)
+        {
             // TODO: Figure out whether the ft[i].id+1 is necessary.
 //            if (contains(node_id, this.Id, this.fingerTable[i].Id))
 //            if (contains(this.ft_info[i].start, pred_id+1, node_id))
             if (contains(node_id, this.ft_info[i].start, this.fingerTable[i].Id))
+            {
                 this.fingerTable[i] = new_node;
+            }
+        }
 
         String message;
         ProcessInfo receiver;
@@ -275,8 +279,11 @@ public class ServerNode extends Thread {
     // Find the closest node that is less than node_id.
     public ProcessInfo closest_preceding_finger(int node_id)
     {
+//        for (int i = 7; i >= 0; i--)
+//            if (this.ft_info[i].contains(this.fingerTable[i].Id))
+//                return this.fingerTable[i];
         for (int i = 7; i >= 0; i--)
-            if (this.ft_info[i].contains(this.fingerTable[i].Id))
+            if (contains(this.fingerTable[i].Id, this.Id, node_id))
                 return this.fingerTable[i];
         // TODO: Figure out if this is necessary.
         return this.fingerTable[0];
@@ -306,7 +313,13 @@ public class ServerNode extends Thread {
         {
             // TODO: Figure out whether the ft[i].id+1 is necessary.
             if (contains(this.ft_info[i+1].start, this.Id, this.fingerTable[i].Id+1))
+            {
+//                System.out.println("my id: " + Integer.toString(this.Id)
+//                                    + " start: " + Integer.toString(node_id)
+//                                    + " value: " + Integer.toString(this.fingerTable[i].Id)
+//                                    + " end: " + Integer.toString(this.ft_info[i+1].start));
                 this.fingerTable[i+1] = this.fingerTable[i];
+            }
             else
             {
                 // "i <start> <ft index> <node_id>"
@@ -392,9 +405,9 @@ public class ServerNode extends Thread {
                           + "," + this.fingerTable[5].Id
                           + "," + this.fingerTable[6].Id
                           + "," + this.fingerTable[7].Id
-                          + "\n" + "Keys:" + keys + "\n"
+                          + "\n" + "Keys:" + keys + "\n";
                           // temp remove this after
-                          + "pred: " + Integer.toString(this.pred.Id) + "\n";
+//                          + "pred: " + Integer.toString(this.pred.Id) + "\n";
         this.ack_sender(response);
     }
 
@@ -510,11 +523,11 @@ public class ServerNode extends Thread {
      * Returns whether or not a given id falls
      * within this interval [start,end).
      */
-    public static boolean contains(int id, int start, int end)
+    public boolean contains(int id, int start, int end)
     {
         return   (start < end && id >= start && id < end)
                ||(start > end && (id >= start || id < end))
-               ||(start == end && start == 0);
+               ||(start == end && start == 0 && this.pred.Id == 0 && this.fingerTable[0].Id == 0);
     }
 
     /*
