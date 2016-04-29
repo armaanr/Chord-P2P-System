@@ -30,6 +30,10 @@ public class ServerNode extends Thread {
     int min_delay;
     int max_delay;
     InetAddress localhost = InetAddress.getByName("127.0.0.1");
+    
+    boolean failStarter;
+    Thread failChecker;
+    boolean crash;
 	
 	ServerSocket server;
 	
@@ -41,6 +45,9 @@ public class ServerNode extends Thread {
 		this.fingerTable = new ProcessInfo[8];
         // Stores useful interval information for easy comparison.
         this.ft_info = new IntervalInfo[8];
+        this.failStarter = false;
+        this.failChecker = null;
+        this.crash = false;
         // Initialized to false.
 		this.keys = new boolean[256];
 		this.duplicates = new boolean[256];
@@ -53,6 +60,120 @@ public class ServerNode extends Thread {
             this.fingerTable[i] = this.self_info;
         }
     }
+    
+    public void find(int node_id, int key)
+    {
+        if(keys[key%256] == true)
+        {
+            String message = "find " + node_id;
+            ack_sender(message);
+        }
+        else
+        {
+            ProcessInfo nextNode = null;
+            for(int i = 0; i< fingerTable.length; i++)
+            {
+                if(fingerTable[i].Id <= node_id)
+                {
+                    if(fingerTable[i].Id > nextNode.Id)
+                    {
+                        nextNode = fingerTable[i];
+                    }
+                }
+                
+            }
+            
+            String message = "find " + node_id + " " + key+ " " + client.portNumber ;
+            Runnable sender = new ClientSender(nextNode, message);
+            new Thread(sender).start();
+            
+        }
+        
+    }
+    
+    public void ping()
+    {
+        this.failChecker = new Pinger(this.pred, this.self_info);
+        this.failChecker.start();
+        
+    }
+    
+    private void failDetectHandler() {
+        int crashedId = pred.Id;
+        System.out.println("Crashed => " + crashedId);
+        
+        int newPredecessorId = newPredFinder(crashedId);
+        
+        for(int i = newPredecessorId+1 ; i < (crashedId+1)%256; i++)
+        {
+            this.keys[i] = true;
+        }
+        
+        this.pred = new ProcessInfo(newPredecessorId, this.node0.portNumber + newPredecessorId, localhost);
+        this.failChecker.interrupt();
+        ping();
+        
+        String message = "fail " + crashedId + " " + this.Id + " " + this.pred ;
+        Runnable send = new ClientSender(this.pred, message);
+        new Thread(send).start();
+        
+        String succMessage = "dupsUpdate "+ this.pred.Id + " "+ crashedId;
+        Runnable send2 = new ClientSender(this.fingerTable[0], message);
+        new Thread(send2).start();
+    }
+    
+    public void dupsUpdate(int start, int end )
+    {
+        for(int i = start+1 ; i < (end+1)%256; i++)
+        {
+            this.duplicates[i] = true;
+        }
+    }
+    
+    private int newPredFinder(int crashedId) {
+        int newPredecessorId = -1;
+        
+        for(int i = crashedId ; i>0; i--)
+        {
+            if(this.duplicates[i] = false)
+            {
+                newPredecessorId = i;
+                break;
+            }
+        }
+        
+        return newPredecessorId;
+    }
+    
+    
+    public void crashUpdater(int crashId, int replace, int crashPred)
+    {
+        if(this.failStarter || ( (this.Id+128)%256 <= crashPred ) )
+        {
+            String message = "crash" + crashId;
+            ack_sender(message);
+        }
+        
+        for(int i = 0; i< fingerTable.length ; i++)
+        {
+            if(fingerTable[i].Id == crashId)
+            {
+                fingerTable[i] = new ProcessInfo(replace, this.node0.portNumber + replace, localhost);
+            }
+        }
+        
+        try {
+            Socket sock = new Socket(this.pred.IP, this.pred.portNumber);
+            String message = "fail " + crashId + " "+ replace + " " + crashPred;
+            DataOutputStream failSend = new DataOutputStream(sock.getOutputStream());
+            failSend.writeUTF(message);
+            sock.close();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
 	
 	public void nodeJoin(int node_id, String[] tokens)
 	{
@@ -418,6 +539,11 @@ public class ServerNode extends Thread {
 	//handles received messages
 	private void receiver() throws IOException, ClassNotFoundException {
 		
+        if(this.failChecker.isInterrupted())
+        {
+            failChecker = null;
+            ping();
+        }
 		Socket receiver = server.accept();
 		
         DataInputStream input = new DataInputStream(receiver.getInputStream());
@@ -432,9 +558,28 @@ public class ServerNode extends Thread {
             case "join":
                 this.nodeJoin(node_id, tokens);
                 break;
+            case "dupsUpdate":
+                int start = Integer.parseInt(tokens[1]);
+                int end = Integer.parseInt(tokens[1]);
+                this.dupsUpdate(start, end);
+            case "predFailed":
+                this.failDetectHandler();
+                break;
+            case "fail":
+                int crashId = Integer.parseInt(tokens[1]);
+                int replace = Integer.parseInt(tokens[2]);
+                int crashPred = Integer.parseInt(tokens[3]);
+                this.crashUpdater(crashId,replace, crashPred);
+                break;
             case "crash":
+                this.crash = true;
+                this.failChecker.interrupt();
                 break;
             case "find":
+                int node = Integer.parseInt(tokens[1]);
+                int key = Integer.parseInt(tokens[2]);
+                client = new ProcessInfo(-1, Integer.parseInt(tokens[3]) , localhost);
+                this.find(node, key);
                 break;
             case "show":
                 nodeShow(node_id, tokens);
@@ -480,7 +625,8 @@ public class ServerNode extends Thread {
 	      while(true)
 	      {
 	         try
-	         {	 
+	         {
+                if(!crash)
 	            receiver();
 	         }catch(SocketTimeoutException s)
 	         {
