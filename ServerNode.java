@@ -539,7 +539,7 @@ public class ServerNode extends Thread {
 	//handles received messages
 	private void receiver() throws IOException, ClassNotFoundException {
 		
-        if(this.failChecker.isInterrupted())
+        if((this.failChecker != null) && this.failChecker.isInterrupted())
         {
             failChecker = null;
             ping();
@@ -552,7 +552,7 @@ public class ServerNode extends Thread {
 //        System.out.println("Server " + Integer.toString(this.Id) + " received: " + message);
         String[] tokens = message.split(" ");
         String action = tokens[0];
-//        System.out.println("message: " + message);
+        System.out.println("message: " + message);
         int node_id = Integer.parseInt(tokens[1]);
         switch (action) {
             case "join":
@@ -560,7 +560,7 @@ public class ServerNode extends Thread {
                 break;
             case "dupsUpdate":
                 int start = Integer.parseInt(tokens[1]);
-                int end = Integer.parseInt(tokens[1]);
+                int end = Integer.parseInt(tokens[2]);
                 this.dupsUpdate(start, end);
             case "predFailed":
                 this.failDetectHandler();
