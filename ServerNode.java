@@ -91,7 +91,7 @@ public class ServerNode extends Thread {
     public void init_ft(int node_id, ProcessInfo node0)
     {
         String message = "j " + Integer.toString(node_id);
-//        this.delayGenerator();
+        this.delayGenerator();
         Runnable sender = new ClientSender(node0, message);
         new Thread(sender).start();
     }
@@ -125,7 +125,7 @@ public class ServerNode extends Thread {
                     ProcessInfo receiver = new ProcessInfo(requester_id,
                                                             this.node0.portNumber+requester_id,
                                                             localhost);
-//                    this.delayGenerator();
+                    this.delayGenerator();
                     Runnable sender = new ClientSender(receiver, message);
                     new Thread(sender).start();
                     break;
@@ -144,7 +144,7 @@ public class ServerNode extends Thread {
                     message = purpose;
                     break;
             }
-//            this.delayGenerator();
+            this.delayGenerator();
             Runnable sender = new ClientSender(cpf, message);
             new Thread(sender).start();
 //            System.out.println("pred_id: " + Integer.toString(this.pred.Id)
@@ -205,7 +205,7 @@ public class ServerNode extends Thread {
                       + " " + Integer.toString(pred_id);
             receiver = this.pred;
         }
-//        this.delayGenerator();
+        this.delayGenerator();
         Runnable sender = new ClientSender(receiver, message);
         new Thread(sender).start();
     }
@@ -239,7 +239,7 @@ public class ServerNode extends Thread {
         String update_message = "p"
                                 + " " + Integer.toString(node_id)
                                 + " " + Integer.toString(this.pred.Id);
-//        this.delayGenerator();
+        this.delayGenerator();
         Runnable update_sender = new ClientSender(this.pred, update_message);
         new Thread(update_sender).start();
 
@@ -275,7 +275,7 @@ public class ServerNode extends Thread {
                         + "," + Integer.toString(this.fingerTable[6].Id)
                         + "," + Integer.toString(this.fingerTable[7].Id)
                         + duplicates;
-//        this.delayGenerator();
+        this.delayGenerator();
         Runnable sender = new ClientSender(this.pred, message);
         new Thread(sender).start();
     }
@@ -334,7 +334,7 @@ public class ServerNode extends Thread {
                                 + " " + this.ft_info[i+1].start
                                 + " " + Integer.toString(i+1)
                                 + " " + Integer.toString(this.Id);
-//                this.delayGenerator();
+                this.delayGenerator();
                 Runnable sender = new ClientSender(node0, message);
                 new Thread(sender).start();
             }
@@ -423,7 +423,7 @@ public class ServerNode extends Thread {
         DataInputStream input = new DataInputStream(receiver.getInputStream());
         String message = "";
         message = input.readUTF();
-//        System.out.println("Server " + Integer.toString(this.Id) + " received: " + message);
+        System.out.println("Server " + Integer.toString(this.Id) + " received: " + message);
         String[] tokens = message.split(" ");
         String action = tokens[0];
 //        System.out.println("message: " + message);
@@ -531,7 +531,7 @@ public class ServerNode extends Thread {
     {
         return   (start < end && id >= start && id < end)
                ||(start > end && (id >= start || id < end))
-               ||(start == end && start == 0 && this.pred.Id == 0 && this.fingerTable[0].Id == 0)
+               ||(start == end && start == 1 && this.pred.Id == 0 && this.fingerTable[0].Id == 0)
                ||(start == id);
     }
 
