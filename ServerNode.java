@@ -54,30 +54,6 @@ public class ServerNode extends Thread {
         }
     }
 	
-	//sends the object to the specified node
-	public void Send(ProcessInfo Node, Object toSend) throws IOException
-	{
-		Socket sender = new Socket(Node.IP, Node.portNumber);
-		ObjectOutputStream mapSender = new ObjectOutputStream(sender.getOutputStream());
-		
-		//packet carries the object with a type identifying tag for the receiver.
-		Object[] packet = new Object[2];
-		
-		if(toSend instanceof HashMap)
-		{
-			packet[0] = 1;
-		}
-		else if(toSend instanceof String)
-		{
-			packet[0] = 2;
-		}
-			
-		packet[1] = toSend;
-		mapSender.writeObject(packet);
-		sender.close();
-		
-	}
-	
 	public void nodeJoin(int node_id, String[] tokens)
 	{
         // Set min/max delay values.
@@ -176,17 +152,54 @@ public class ServerNode extends Thread {
     }
 
     /*
-     * May not be necessary. Concurrency issues? Probably not...
+     * Updates the predecessors and initiates the updating of all other nodes whose
+     * finger tables might have changed as a result of the new node joining the system.
      */
-    public void update_as_pred(int node_id)
+    public void update_as_pred(int node_id, int pred_id)
     {
-        this.fingerTable[0] = new ProcessInfo(node_id,
-                                              this.node0.portNumber+node_id,
-                                              localhost);
-        for (int i = 0; i < 7; i++)
+//        this.fingerTable[0] = new ProcessInfo(node_id,
+//                                              this.node0.portNumber+node_id,
+//                                              localhost);
+//        for (int i = 0; i < 7; i++)
+//            // TODO: Figure out whether the ft[i].id+1 is necessary.
+//            if (contains(this.ft_info[i+1].start, this.Id, this.fingerTable[i].Id+1))
+//                this.fingerTable[i+1] = this.fingerTable[i];
+
+//        this.fingerTable[0] = new ProcessInfo(node_id,
+//                                              this.node0.portNumber+node_id,
+//                                              localhost);
+
+        ProcessInfo new_node = new ProcessInfo(node_id,
+                                               this.node0.portNumber+node_id,
+                                               localhost);
+                                              
+        for (int i = 0; i < 8; i++)
             // TODO: Figure out whether the ft[i].id+1 is necessary.
-            if (contains(this.ft_info[i+1].start, this.Id, this.fingerTable[i].Id+1))
-                this.fingerTable[i+1] = this.fingerTable[i];
+//            if (contains(node_id, this.Id, this.fingerTable[i].Id))
+//            if (contains(this.ft_info[i].start, pred_id+1, node_id))
+            if (contains(node_id, this.ft_info[i].start, this.fingerTable[i].Id))
+                this.fingerTable[i] = new_node;
+
+        String message;
+        ProcessInfo receiver;
+        int termination_id = ((pred_id - 127) + 256) % 256;
+        if (contains(termination_id, this.pred.Id, this.Id)) {
+            // The 0 is irrelevant for now, it can be used to store other information
+            // later if necessary.
+            message = "finished 0";
+            receiver = new ProcessInfo(node_id,
+                                       this.node0.portNumber+node_id,
+                                       localhost);
+        }
+        else {
+            message = "p"
+                      + " " + Integer.toString(node_id)
+                      + " " + Integer.toString(termination_id);
+            receiver = this.pred;
+        }
+//        this.delayGenerator();
+        Runnable sender = new ClientSender(receiver, message);
+        new Thread(sender).start();
     }
 
     /*
@@ -215,7 +228,9 @@ public class ServerNode extends Thread {
         // Notify the current predecessor to update its successor to the newly joined node.
         // TODO: find out if possible to update successor and predecessor's ft with these messages.
         int old_pred_id = this.pred.Id;
-        String update_message = "p " + Integer.toString(node_id);
+        String update_message = "p"
+                                + " " + Integer.toString(node_id)
+                                + " " + Integer.toString(this.pred.Id);
 //        this.delayGenerator();
         Runnable update_sender = new ClientSender(this.pred, update_message);
         new Thread(update_sender).start();
@@ -319,7 +334,7 @@ public class ServerNode extends Thread {
         // TODO: remove this once finger table updating is implemented.
         // This ACK should actually be sent after all other nodes are finished updating
         // their finger tables.
-        this.ack_sender("A");
+//        this.ack_sender("A");
     }
 
     /*
@@ -391,11 +406,10 @@ public class ServerNode extends Thread {
         DataInputStream input = new DataInputStream(receiver.getInputStream());
         String message = "";
         message = input.readUTF();
-        System.out.println("Server " + Integer.toString(this.Id) + " received: " + message);
-        if (this.pred != null) System.out.println(this.pred.Id);
-        System.out.println(this.fingerTable[0].Id);
+//        System.out.println("Server " + Integer.toString(this.Id) + " received: " + message);
         String[] tokens = message.split(" ");
         String action = tokens[0];
+//        System.out.println("message: " + message);
         int node_id = Integer.parseInt(tokens[1]);
         switch (action) {
             case "join":
@@ -419,33 +433,14 @@ public class ServerNode extends Thread {
                 break;
             case "successor":
 //                System.out.println("my id: " + Integer.toString(this.Id));
-                update_ft(node_id, tokens);
+                this.update_ft(node_id, tokens);
                 break;
             case "p":
-                update_as_pred(node_id);
+                this.update_as_pred(node_id, Integer.parseInt(tokens[2]));
                 break;
+            case "finished":
+                this.ack_sender("A");
         }
-//		ObjectInputStream input = new ObjectInputStream(receiver.getInputStream());
-//		Object[] message = (Object[]) input.readObject();
-//		int type = (int) message[0];
-//		
-//		System.out.println("type = " + type);
-//		
-//		if(type == 1)
-//		{
-//			@SuppressWarnings("unchecked")
-//			Map<Integer, ProcessInfo> yourMap = (HashMap<Integer, ProcessInfo>) message[1];
-//			
-//			
-//			for(ProcessInfo p : yourMap.values())
-//			System.out.println("Id = "+ p.Id + ", port ="+ p.portNumber + ", inet =" + p.IP.toString());
-//		}
-//		else if(type == 2)
-//		{
-//			String myString = (String) message[1];
-//			
-//			System.out.println(myString);
-//		}
 	}
 
     /*
@@ -519,7 +514,7 @@ public class ServerNode extends Thread {
     {
         return   (start < end && id >= start && id < end)
                ||(start > end && (id >= start || id < end))
-               ||(start == end);
+               ||(start == end && start == 0);
     }
 
     /*
