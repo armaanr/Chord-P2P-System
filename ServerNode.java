@@ -113,7 +113,7 @@ public class ServerNode extends Thread {
         // Checks if current node is node_id's successor.
 //        if (this.
         int pred_comp = this.pred.Id + 1;
-        if (contains(node_id, this.pred.Id+1, this.Id))
+        if (contains(node_id, this.pred.Id+1, this.Id+1))
         {
             switch(tokens[0]) {
                 case "start":
@@ -423,7 +423,7 @@ public class ServerNode extends Thread {
         DataInputStream input = new DataInputStream(receiver.getInputStream());
         String message = "";
         message = input.readUTF();
-        System.out.println("Server " + Integer.toString(this.Id) + " received: " + message);
+//        System.out.println("Server " + Integer.toString(this.Id) + " received: " + message);
         String[] tokens = message.split(" ");
         String action = tokens[0];
 //        System.out.println("message: " + message);
