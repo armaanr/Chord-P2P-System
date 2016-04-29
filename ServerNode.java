@@ -111,7 +111,9 @@ public class ServerNode extends Thread {
 //                            + " this.Id " + Integer.toString(this.Id));
 
         // Checks if current node is node_id's successor.
-        if (contains(node_id, this.pred.Id, this.Id))
+//        if (this.
+        int pred_comp = this.pred.Id + 1;
+        if (contains(node_id, this.pred.Id+1, this.Id))
         {
             switch(tokens[0]) {
                 case "start":
@@ -187,7 +189,9 @@ public class ServerNode extends Thread {
         String message;
         ProcessInfo receiver;
         int termination_id = ((pred_id - 127) + 256) % 256;
-        if (contains(termination_id, this.pred.Id, this.Id)) {
+//        System.out.println("node id: " + Integer.toString(node_id));
+//        System.out.println("termination id: " + Integer.toString(termination_id));
+        if (contains(termination_id, this.pred.Id+1, this.Id+1)) {
             // The 0 is irrelevant for now, it can be used to store other information
             // later if necessary.
             message = "finished 0";
@@ -198,7 +202,7 @@ public class ServerNode extends Thread {
         else {
             message = "p"
                       + " " + Integer.toString(node_id)
-                      + " " + Integer.toString(termination_id);
+                      + " " + Integer.toString(pred_id);
             receiver = this.pred;
         }
 //        this.delayGenerator();
@@ -283,7 +287,7 @@ public class ServerNode extends Thread {
 //            if (this.ft_info[i].contains(this.fingerTable[i].Id))
 //                return this.fingerTable[i];
         for (int i = 7; i >= 0; i--)
-            if (contains(this.fingerTable[i].Id, this.Id, node_id))
+            if (contains(this.fingerTable[i].Id, this.Id+1, node_id))
                 return this.fingerTable[i];
         // TODO: Figure out if this is necessary.
         return this.fingerTable[0];
@@ -419,7 +423,7 @@ public class ServerNode extends Thread {
         DataInputStream input = new DataInputStream(receiver.getInputStream());
         String message = "";
         message = input.readUTF();
-//        System.out.println("Server " + Integer.toString(this.Id) + " received: " + message);
+        System.out.println("Server " + Integer.toString(this.Id) + " received: " + message);
         String[] tokens = message.split(" ");
         String action = tokens[0];
 //        System.out.println("message: " + message);
@@ -527,7 +531,8 @@ public class ServerNode extends Thread {
     {
         return   (start < end && id >= start && id < end)
                ||(start > end && (id >= start || id < end))
-               ||(start == end && start == 0 && this.pred.Id == 0 && this.fingerTable[0].Id == 0);
+               ||(start == end && start == 0 && this.pred.Id == 0 && this.fingerTable[0].Id == 0)
+               ||(start == id);
     }
 
     /*
