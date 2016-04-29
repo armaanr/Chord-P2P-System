@@ -84,6 +84,7 @@ public class Client extends Thread
         else if (tokens[0].equals("crash"))
         {
         	int node_id = Integer.parseInt(tokens[1]);
+        	nodes.remove(node_id);
         	ProcessInfo node = this.nodes.get(node_id);
         	
             // Adding Node 0 information.
