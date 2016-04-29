@@ -85,11 +85,50 @@ public class Client extends Thread
         }
         else if (tokens[0].equals("crash"))
         {
-            // crash code here
+        	int node_id = Integer.parseInt(tokens[1]);
+        	ProcessInfo node = this.nodes.get(node_id);
+        	
+            // Adding Node 0 information.
+            String message = "crash"
+                             + " " + node_id;
+            this.mutex.lock();
+            if (!this.need_ack) {
+                this.crash(node, message);
+            }
+            else {
+                this.Q.add(message);
+                this.need_ack = true;
+            }
+            this.mutex.unlock();
         }
         else if (tokens[0].equals("find"))
         {
-            // find code here
+        	int node_id = Integer.parseInt(tokens[1]);
+        	int key = Integer.parseInt(tokens[2]);
+        	
+        	ProcessInfo targetNode = null;
+        	if(nodes.containsKey(node_id))
+        	{
+        		targetNode = nodes.get(node_id);
+        	}
+        	else
+        	{
+        		System.out.println(node_id + "does not exist");
+        	}
+        	
+            // Adding Node 0 information.
+            String message = "find"
+                             + " " + node_id
+                             + " " + key;
+            this.mutex.lock();
+            if (!this.need_ack) {
+                this.find(targetNode, message);
+            }
+            else {
+                this.Q.add(message);
+                this.need_ack = true;
+            }
+            this.mutex.unlock();
         }
         else if (tokens[0].equals("show"))
         {
@@ -135,6 +174,7 @@ public class Client extends Thread
         
         return retval;
     }
+
 
     public void show(int node_id, String print)
     {
@@ -184,10 +224,10 @@ public class Client extends Thread
                         this.join(node_id, message);
                         break;
                     case "crash":
-                        // crash code here
+                        System.out.println(node_id + " crashed.");
                         break;
                     case "find":
-                        // find code here
+                        System.out.println("Found the key in Node =>" + node_id);
                         break;
                     case "show":
                         this.show(node_id, tokens[2]);
@@ -231,19 +271,25 @@ public class Client extends Thread
             this.need_ack = true;
          }
     }
-
+    
     /*
      * Executes a clean crash on the specified node.
      */
-    public void crash(int node_id)
+    public void crash(ProcessInfo node, String message)
     {
+        Runnable sender = new ClientSender(node, message);
+        new Thread(sender).start();
+        this.need_ack = true;
     }
-
     /*
      * Finds the node with the specified key.
      */
-    public void find(int key_id)
+    public void find(ProcessInfo node , String message)
     {
+    	message += " " + this.self_info.portNumber;
+        Runnable sender = new ClientSender(node, message);
+        new Thread(sender).start();
+        this.need_ack = true;
     }
 
     /* 
