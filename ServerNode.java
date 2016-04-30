@@ -535,9 +535,13 @@ public class ServerNode extends Thread {
     public void nodeShow(int node_id, String[] tokens)
     {
         String keys = "";
+        String duplicates = "";
         for (int i = 0; i < 256; i++)
             if (this.keys[i])
                 keys += " " + Integer.toString(i);
+        for (int i = 0; i < 256; i++)
+            if (this.duplicates[i])
+                duplicates += " " + Integer.toString(i);
         String response = Integer.toString(node_id)
         + "\n" + "FingerTable: " + this.fingerTable[0].Id
         + "," + this.fingerTable[1].Id
@@ -548,8 +552,10 @@ public class ServerNode extends Thread {
         + "," + this.fingerTable[6].Id
         + "," + this.fingerTable[7].Id
         + "\n" + "Keys:" + keys + "\n"
+        + "\n" + "Dups:" + duplicates + "\n"
         // temp remove this after
         + "pred: " + Integer.toString(this.pred.Id) + "\n";
+        
         this.ack_sender(response);
     }
     
