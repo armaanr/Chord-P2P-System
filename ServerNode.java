@@ -84,17 +84,22 @@ public class ServerNode extends Thread {
     }
     
     private void failDetectHandler() {
-        //        System.out.println("entered failure detecter in "+ this.Id);
+        System.out.println("entered failure detecter in "+ this.Id);
         int crashedId = pred.Id;
         this.failStarter = true;
-        //        System.out.println("Crashed => " + crashedId);
+        System.out.println("Crashed => " + crashedId);
         
         int newPredecessorId = newPredFinder(crashedId);
-        //        System.out.println("switched pre to "+ newPredecessorId);
-        for(int i = newPredecessorId+1 ; i < (crashedId+1)%256; i++)
+        System.out.println("switched pre to "+ newPredecessorId);
+        
+        if(this.Id != 0)
         {
-            this.keys[i] = true;
+            for(int i = newPredecessorId+1 ; i < (crashedId+1); i++)
+            {
+                this.keys[i] = true;
+            }
         }
+        
         
         this.pred = new ProcessInfo(newPredecessorId, this.node0.portNumber + newPredecessorId, localhost);
         
@@ -126,7 +131,7 @@ public class ServerNode extends Thread {
     
     public void dupsUpdate(int start, int end, boolean delPrev )
     {
-        //        System.out.println("updating dups between " + start + " and "+end+" in "+this.Id);
+        System.out.println("updating dups between " + start + " and "+end+" in "+this.Id);
         boolean zeroNodeRelated = false;
         
         if(start >= end)
@@ -168,7 +173,7 @@ public class ServerNode extends Thread {
         {
             if(this.duplicates[i] == false)
             {
-                //                System.out.println("duplicate looked at = " + i);
+                System.out.println("duplicate looked at = " + i);
                 newPredecessorId = i;
                 break;
             }
@@ -180,7 +185,7 @@ public class ServerNode extends Thread {
     
     public void crashUpdater(int crashId, int replace, int crashPred)
     {
-        //        System.out.println("entered crash updater in "+ this.Id);
+        System.out.println("entered crash updater in "+ this.Id);
         
         for(int i = 0; i< fingerTable.length ; i++)
         {
@@ -192,7 +197,24 @@ public class ServerNode extends Thread {
         
         if(this.failStarter) // || ( (this.Id+128)%256 <= crashPred ) )
         {
-            //            System.out.println("reached failStarter");
+            if(this.Id == 0)
+            {
+                for(int i =0 ; i<256; i++)
+                {
+                    this.keys[i] = false;
+                }
+                this.keys[0] = true;
+                for(int i = this.pred.Id+1 ; i < 256; i++)
+                {
+                    this.keys[i] = true;
+                }
+                
+                delayGenerator();
+                String succMessage = "dupsUpdate "+ this.pred.Id + " "+ 0  + " true";
+                Runnable send2 = new ClientSender(this.fingerTable[0], succMessage);
+                new Thread(send2).start();
+            }
+            System.out.println("reached failStarter");
             this.failStarter = false;
             String message = "crash" + crashId;
             ack_sender(message);
