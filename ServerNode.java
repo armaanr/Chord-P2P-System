@@ -623,6 +623,8 @@ public class ServerNode extends Thread {
                 this.ack_sender("A");
         }
         
+        receiver.close();
+        
     }
     
     /*
@@ -646,18 +648,18 @@ public class ServerNode extends Thread {
            {
                try
                {
+                   if(this.crash)
+                   {
+                       System.out.println("ending " + this.Id );
+                       this.server.close();
+                       break;
+                   }
+                   
                    receiver();
                    
                    
                    
-                   if(this.crash)
-                   {
-                       System.out.println("ending " + this.Id );
-                       
-                       break;
-                       
-                       
-                   }
+                   
                }catch(SocketTimeoutException s)
                {
                    System.out.println("Socket timed out!");
