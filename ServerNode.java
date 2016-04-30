@@ -24,14 +24,14 @@ import org.omg.CORBA.portable.InputStream;
 public class ServerNode extends Thread {
     String join_report_file = "join_report.txt";
     String find_report_file = "find_report.txt";
-
+    
     // Due to concurrency issues.
     int ack_count;
     public Lock mutex;
-
-	int Id;
-	ProcessInfo pred;
-	ProcessInfo[] fingerTable;
+    
+    int Id;
+    ProcessInfo pred;
+    ProcessInfo[] fingerTable;
     IntervalInfo[] ft_info;
     boolean[] keys;
     boolean[] duplicates;
@@ -41,7 +41,7 @@ public class ServerNode extends Thread {
     int min_delay;
     int max_delay;
     InetAddress localhost = InetAddress.getByName("127.0.0.1");
-
+    
     boolean failStarter;
     Thread failChecker;
     boolean crash;
@@ -52,7 +52,7 @@ public class ServerNode extends Thread {
     {
         this.ack_count = 0;
         this.mutex = new ReentrantLock(true);
-
+        
         this.Id = Id;
         this.server = new ServerSocket(port, 10, localhost);
         this.pred = null;
@@ -105,19 +105,46 @@ public class ServerNode extends Thread {
         Runnable send = new ClientSender(this.pred, message);
         new Thread(send).start();
         
-        String succMessage = "dupsUpdate "+ this.pred.Id + " "+ crashedId;
+        String succMessage = "dupsUpdate "+ this.pred.Id + " "+ crashedId + " false";
         Runnable send2 = new ClientSender(this.fingerTable[0], succMessage);
         new Thread(send2).start();
     }
     
-    public void dupsUpdate(int start, int end )
+    public void dupsUpdate(int start, int end, boolean delPrev )
     {
-        System.out.println("updating dups between " + start + " and "+end);
+        System.out.println("updating dups between " + start + " and "+end+" in "+this.Id);
+        boolean zeroNodeRelated = false;
         
-        for(int i = start+1 ; i < (end+1)%256; i++)
+        if(start >= end)
         {
-            this.duplicates[i] = true;
+            zeroNodeRelated = true;
         }
+        
+        if(delPrev || zeroNodeRelated)
+        {
+            for(int i = 0 ; i < 256; i++)
+            {
+                this.duplicates[i] = false;
+            }
+        }
+        
+        if(zeroNodeRelated)
+        {
+            this.duplicates[0] = true;
+            
+            for(int i = start+1; i<256; i++)
+            {
+                this.duplicates[i] = true;
+            }
+        }
+        else
+        {
+            for(int i = start+1 ; i < (end+1)%256; i++)
+            {
+                this.duplicates[i] = true;
+            }
+        }
+        
     }
     
     private int newPredFinder(int crashedId) {
@@ -141,7 +168,7 @@ public class ServerNode extends Thread {
     {
         System.out.println("entered crash updater in "+ this.Id);
         
-        if(this.failStarter || ( (this.Id+128)%256 <= crashPred ) )
+        if(this.failStarter) // || ( (this.Id+128)%256 <= crashPred ) )
         {
             System.out.println("reached failStarter");
             String message = "crash" + crashId;
@@ -155,6 +182,13 @@ public class ServerNode extends Thread {
             {
                 fingerTable[i] = new ProcessInfo(replace, this.node0.portNumber + replace, localhost);
             }
+        }
+        
+        if(this.Id == crashPred)
+        {
+            String succMessage = "dupsUpdate "+ this.pred.Id + " "+ this.Id+ " true";
+            Runnable send2 = new ClientSender(this.fingerTable[0], succMessage);
+            new Thread(send2).start();
         }
         
         try {
@@ -210,9 +244,9 @@ public class ServerNode extends Thread {
         this.delayGenerator();
         Runnable sender = new ClientSender(node0, message);
         new Thread(sender).start();
-//        log(message);
+        //        log(message);
     }
-
+    
     /*
      * Can be used to log interactions between nodes. Messages used for the
      * find command are recorded in find_report_file and messages used for
@@ -227,7 +261,7 @@ public class ServerNode extends Thread {
             report_file = this.find_report_file;
         else
             report_file = this.join_report_file;
-
+        
         try{
             Writer output = new BufferedWriter(new FileWriter(report_file, true));
             output.append(message+"\n");
@@ -236,7 +270,7 @@ public class ServerNode extends Thread {
         catch (IOException e) {
             e.printStackTrace();
         }
-
+        
     }
     
     /*
@@ -248,7 +282,7 @@ public class ServerNode extends Thread {
     {
         String[] tokens = purpose.split(" ");
         String message = "";
-
+        
         // Checks if current node is node_id's successor.
         int pred_comp = this.pred.Id + 1;
         if (contains(node_id, this.pred.Id+1, this.Id+1))
@@ -261,12 +295,12 @@ public class ServerNode extends Thread {
                     message = "u " + Integer.toString(this.Id) + " " + tokens[2];
                     int requester_id = Integer.parseInt(tokens[3]);
                     ProcessInfo receiver = new ProcessInfo(requester_id,
-                                                            this.node0.portNumber+requester_id,
-                                                            localhost);
+                                                           this.node0.portNumber+requester_id,
+                                                           localhost);
                     this.delayGenerator();
                     Runnable sender = new ClientSender(receiver, message);
                     new Thread(sender).start();
-//                    this.log(message);
+                    //                    this.log(message);
                     break;
             }
         }
@@ -286,7 +320,7 @@ public class ServerNode extends Thread {
             this.delayGenerator();
             Runnable sender = new ClientSender(cpf, message);
             new Thread(sender).start();
-//            this.log(message);
+            //            this.log(message);
         }
     }
     
@@ -329,7 +363,7 @@ public class ServerNode extends Thread {
         this.delayGenerator();
         Runnable sender = new ClientSender(receiver, message);
         new Thread(sender).start();
-//        this.log(message);
+        //        this.log(message);
     }
     
     /*
@@ -357,13 +391,13 @@ public class ServerNode extends Thread {
             this.keys[j % 256] = false;
             this.duplicates[j % 256] = true;
         }
-
+        
         // The successor's final keys become the super successor's duplicates.
         String super_successor_duplicates = "";
         for (int k = 0; k < 256; k++)
             if (this.keys[k])
                 super_successor_duplicates += " " + Integer.toString(k);
-
+        
         // Need to update super successor's duplicates as well.
         if (!(this.Id == 0 && this.pred.Id == 0))
         {
@@ -371,23 +405,23 @@ public class ServerNode extends Thread {
             this.delayGenerator();
             Runnable update_super = new ClientSender(this.fingerTable[0], update_super_message);
             new Thread(update_super).start();
-    //        this.log(super_successor_duplicates);
-         }
+            //        this.log(super_successor_duplicates);
+        }
         
         // Notify the current predecessor to update its successor to the newly joined node.
         int old_pred_id = this.pred.Id;
         String update_message = "p"
-                                + " " + Integer.toString(node_id)
-                                + " " + Integer.toString(this.pred.Id);
+        + " " + Integer.toString(node_id)
+        + " " + Integer.toString(this.pred.Id);
         this.mutex.lock();
         this.ack_count++;
         this.mutex.unlock();
-
+        
         this.delayGenerator();
         Runnable update_sender = new ClientSender(this.pred, update_message);
         new Thread(update_sender).start();
-//        this.log(update_message);
-
+        //        this.log(update_message);
+        
         // Update predecessor to the newly joined node.
         this.pred = new ProcessInfo(node_id,
                                     this.node0.portNumber+node_id,
@@ -398,27 +432,27 @@ public class ServerNode extends Thread {
         
         if (old_pred_id == this.Id)
             this.fingerTable[0] = this.pred;
-
+        
         // Gives new node its predecessor's id, successor's id,
         // successor's finger table, and successor's original duplicates.
         String message = "successor"
-                        + " " + Integer.toString(old_pred_id)
-                        + " " + Integer.toString(this.Id)
-                        + " " + Integer.toString(this.fingerTable[0].Id)
-                        + "," + Integer.toString(this.fingerTable[1].Id)
-                        + "," + Integer.toString(this.fingerTable[2].Id)
-                        + "," + Integer.toString(this.fingerTable[3].Id)
-                        + "," + Integer.toString(this.fingerTable[4].Id)
-                        + "," + Integer.toString(this.fingerTable[5].Id)
-                        + "," + Integer.toString(this.fingerTable[6].Id)
-                        + "," + Integer.toString(this.fingerTable[7].Id)
-                        + duplicates;
+        + " " + Integer.toString(old_pred_id)
+        + " " + Integer.toString(this.Id)
+        + " " + Integer.toString(this.fingerTable[0].Id)
+        + "," + Integer.toString(this.fingerTable[1].Id)
+        + "," + Integer.toString(this.fingerTable[2].Id)
+        + "," + Integer.toString(this.fingerTable[3].Id)
+        + "," + Integer.toString(this.fingerTable[4].Id)
+        + "," + Integer.toString(this.fingerTable[5].Id)
+        + "," + Integer.toString(this.fingerTable[6].Id)
+        + "," + Integer.toString(this.fingerTable[7].Id)
+        + duplicates;
         this.delayGenerator();
         Runnable sender = new ClientSender(this.pred, message);
         new Thread(sender).start();
-//        this.log(message);
+        //        this.log(message);
     }
-
+    
     /*
      * Find the closest node that is less than node_id.
      */
@@ -466,13 +500,13 @@ public class ServerNode extends Thread {
                 this.ack_count++;
                 this.mutex.unlock();
                 String message = "i"
-                                + " " + this.ft_info[i+1].start
-                                + " " + Integer.toString(i+1)
-                                + " " + Integer.toString(this.Id);
+                + " " + this.ft_info[i+1].start
+                + " " + Integer.toString(i+1)
+                + " " + Integer.toString(this.Id);
                 this.delayGenerator();
                 Runnable sender = new ClientSender(node0, message);
                 new Thread(sender).start();
-//                this.log(message);
+                //                this.log(message);
             }
         }
         // Update the keys.
@@ -513,25 +547,25 @@ public class ServerNode extends Thread {
             if (this.duplicates[i])
                 duplicates += " " + Integer.toString(i);
         String response = Integer.toString(node_id)
-                          + "\n" + "FingerTable: " + this.fingerTable[0].Id
-                          + "," + this.fingerTable[1].Id
-                          + "," + this.fingerTable[2].Id
-                          + "," + this.fingerTable[3].Id
-                          + "," + this.fingerTable[4].Id
-                          + "," + this.fingerTable[5].Id
-                          + "," + this.fingerTable[6].Id
-                          + "," + this.fingerTable[7].Id
-                          + "\n" + "Keys:" + keys + "\n"
-                          + "Duplicates:" + duplicates + "\n";
-//                          + "pred: " + Integer.toString(this.pred.Id) + "\n";
+        + "\n" + "FingerTable: " + this.fingerTable[0].Id
+        + "," + this.fingerTable[1].Id
+        + "," + this.fingerTable[2].Id
+        + "," + this.fingerTable[3].Id
+        + "," + this.fingerTable[4].Id
+        + "," + this.fingerTable[5].Id
+        + "," + this.fingerTable[6].Id
+        + "," + this.fingerTable[7].Id
+        + "\n" + "Keys:" + keys + "\n"
+        + "Duplicates:" + duplicates + "\n"
+        +"pred: " + Integer.toString(this.pred.Id) + "\n";
         this.ack_sender(response);
     }
-
+    
     /*
      * Checks if it has key. If not, forwards the request to the closest preceding
      * node to key in its finger table. If it does, it sends a "found" response to
      * the node that initiated the request so that it can send an ack to the client.
-     */ 
+     */
     public void find(int node_id, int key)
     {
         String message;
@@ -551,9 +585,9 @@ public class ServerNode extends Thread {
         this.delayGenerator();
         Runnable sender = new ClientSender(nextNode, message);
         new Thread(sender).start();
-//        this.log(message);
+        //        this.log(message);
     }
-
+    
     //handles received messages
     private void receiver() throws IOException, ClassNotFoundException {
         
@@ -578,7 +612,8 @@ public class ServerNode extends Thread {
             case "dupsUpdate":
                 int start = Integer.parseInt(tokens[1]);
                 int end = Integer.parseInt(tokens[2]);
-                this.dupsUpdate(start, end);
+                boolean delPrev = Boolean.parseBoolean(tokens[3]);
+                this.dupsUpdate(start, end, delPrev);
                 break;
             case "predFailed":
                 this.failDetectHandler();
@@ -614,7 +649,7 @@ public class ServerNode extends Thread {
                 // All updates are complete.
                 if (this.ack_count == -1)
                 {
-//                    log("ACK sent!");
+                    //                    log("ACK sent!");
                     ping();
                     this.ack_sender("A");
                 }
@@ -632,7 +667,7 @@ public class ServerNode extends Thread {
                 // All updates are complete.
                 if (this.ack_count == -1)
                 {
-//                    log("ACK sent!");
+                    //                    log("ACK sent!");
                     ping();
                     this.ack_sender("A");
                 }
@@ -649,7 +684,7 @@ public class ServerNode extends Thread {
         receiver.close();
         
     }
-
+    
     /*
      * Updates duplicates to values in the given array.
      */
@@ -708,14 +743,14 @@ public class ServerNode extends Thread {
                }
            }
        }
-	
+    
     /*
-     * Can be used for testing. 
+     * Can be used for testing.
      */
-	public static void main(String args[]) throws InterruptedException
-	{
-	}
-
+    public static void main(String args[]) throws InterruptedException
+    {
+    }
+    
     /*
      * Returns whether or not a given id falls
      * within this interval [start,end).
