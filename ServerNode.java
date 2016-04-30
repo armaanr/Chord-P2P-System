@@ -105,9 +105,21 @@ public class ServerNode extends Thread {
         Runnable send = new ClientSender(this.pred, message);
         new Thread(send).start();
         
-        String succMessage = "dupsUpdate "+ this.pred.Id + " "+ crashedId + " false";
-        Runnable send2 = new ClientSender(this.fingerTable[0], succMessage);
-        new Thread(send2).start();
+        if(this.pred.Id == this.Id)
+        {
+            System.out.println("special 0 case for dups");
+            for(int i = 0; i<256; i++)
+            {
+                this.duplicates[i] = true;
+                this.keys[i] = true;
+            }
+        }
+        else
+        {
+            String succMessage = "dupsUpdate "+ this.pred.Id + " "+ crashedId + " false";
+            Runnable send2 = new ClientSender(this.fingerTable[0], succMessage);
+            new Thread(send2).start();
+        }
     }
     
     public void dupsUpdate(int start, int end, boolean delPrev )
