@@ -1,0 +1,2007 @@
+found 60
+found 128
+find 128 187 1999
+find 128 187 1999
+found 204
+find 255 199 1999
+find 255 199 1999
+find 255 199 1999
+found 204
+find 172 38 1999
+find 172 38 1999
+find 172 38 1999
+found 60
+find 60 196 1999
+find 60 196 1999
+find 60 196 1999
+found 204
+find 0 210 1999
+find 0 210 1999
+find 0 210 1999
+found 231
+find 255 188 1999
+find 255 188 1999
+find 255 188 1999
+found 204
+find 231 106 1999
+find 231 106 1999
+found 128
+find 255 103 1999
+find 255 103 1999
+found 128
+find 254 180 1999
+find 254 180 1999
+find 254 180 1999
+found 204
+find 204 115 1999
+find 204 115 1999
+find 204 115 1999
+found 128
+find 60 83 1999
+found 128
+find 231 185 1999
+find 231 185 1999
+find 231 185 1999
+found 204
+found 204
+found 60
+find 231 98 1999
+find 231 98 1999
+found 128
+find 231 138 1999
+find 231 138 1999
+found 172
+found 128
+find 172 242 1999
+find 172 242 1999
+find 172 242 1999
+found 254
+find 231 184 1999
+find 231 184 1999
+find 231 184 1999
+found 204
+found 60
+find 128 141 1999
+found 172
+find 255 123 1999
+find 255 123 1999
+found 128
+find 255 222 1999
+find 255 222 1999
+find 255 222 1999
+found 231
+found 128
+find 128 179 1999
+find 128 179 1999
+found 204
+find 204 156 1999
+find 204 156 1999
+found 172
+found 16
+find 0 127 1999
+find 0 127 1999
+found 128
+find 0 24 1999
+find 0 24 1999
+found 60
+find 128 232 1999
+find 128 232 1999
+find 128 232 1999
+found 254
+find 231 250 1999
+found 254
+find 0 105 1999
+find 0 105 1999
+found 128
+find 172 122 1999
+find 172 122 1999
+found 128
+find 0 40 1999
+find 0 40 1999
+found 60
+find 0 227 1999
+find 0 227 1999
+find 0 227 1999
+found 231
+find 231 65 1999
+find 231 65 1999
+found 128
+find 128 203 1999
+find 128 203 1999
+found 204
+find 231 192 1999
+find 231 192 1999
+find 231 192 1999
+found 204
+find 255 236 1999
+find 255 236 1999
+find 255 236 1999
+find 255 236 1999
+found 254
+find 254 178 1999
+find 254 178 1999
+find 254 178 1999
+found 204
+find 231 249 1999
+found 254
+find 128 220 1999
+find 128 220 1999
+found 231
+find 16 114 1999
+find 16 114 1999
+found 128
+find 16 66 1999
+find 16 66 1999
+found 128
+find 254 71 1999
+find 254 71 1999
+found 128
+find 231 194 1999
+find 231 194 1999
+find 231 194 1999
+found 204
+find 254 202 1999
+find 254 202 1999
+find 254 202 1999
+found 204
+find 60 96 1999
+found 128
+find 255 142 1999
+find 255 142 1999
+found 172
+found 254
+find 231 7 1999
+find 231 7 1999
+find 231 7 1999
+found 16
+found 128
+find 0 153 1999
+find 0 153 1999
+found 172
+find 172 176 1999
+found 204
+find 0 197 1999
+find 0 197 1999
+find 0 197 1999
+found 204
+find 16 155 1999
+find 16 155 1999
+found 172
+find 16 34 1999
+found 60
+find 231 243 1999
+found 254
+find 0 148 1999
+find 0 148 1999
+found 172
+find 254 6 1999
+find 254 6 1999
+found 16
+find 255 224 1999
+find 255 224 1999
+find 255 224 1999
+found 231
+find 255 72 1999
+find 255 72 1999
+found 128
+find 255 152 1999
+find 255 152 1999
+found 172
+find 255 87 1999
+find 255 87 1999
+found 128
+find 16 150 1999
+find 16 150 1999
+found 172
+find 231 14 1999
+find 231 14 1999
+find 231 14 1999
+found 16
+find 16 233 1999
+find 16 233 1999
+find 16 233 1999
+find 16 233 1999
+found 254
+find 204 26 1999
+find 204 26 1999
+found 60
+find 255 209 1999
+find 255 209 1999
+find 255 209 1999
+found 231
+find 0 93 1999
+find 0 93 1999
+found 128
+find 255 16 1999
+find 255 16 1999
+found 16
+find 128 207 1999
+find 128 207 1999
+found 231
+find 60 172 1999
+find 60 172 1999
+found 172
+find 0 151 1999
+find 0 151 1999
+found 172
+find 255 162 1999
+find 255 162 1999
+found 172
+find 0 90 1999
+find 0 90 1999
+found 128
+find 172 108 1999
+find 172 108 1999
+found 128
+find 0 134 1999
+find 0 134 1999
+found 172
+find 255 82 1999
+find 255 82 1999
+found 128
+find 60 221 1999
+find 60 221 1999
+found 231
+find 128 132 1999
+found 172
+find 231 139 1999
+find 231 139 1999
+found 172
+found 231
+find 128 47 1999
+find 128 47 1999
+find 128 47 1999
+found 60
+found 128
+find 231 111 1999
+find 231 111 1999
+found 128
+find 204 20 1999
+find 204 20 1999
+found 60
+find 128 137 1999
+found 172
+find 254 49 1999
+find 254 49 1999
+found 60
+find 172 4 1999
+find 172 4 1999
+find 172 4 1999
+found 16
+find 254 95 1999
+find 254 95 1999
+found 128
+find 172 215 1999
+find 172 215 1999
+found 231
+find 60 167 1999
+find 60 167 1999
+found 172
+find 128 39 1999
+find 128 39 1999
+find 128 39 1999
+found 60
+find 16 75 1999
+find 16 75 1999
+found 128
+find 16 37 1999
+found 60
+find 231 74 1999
+find 231 74 1999
+found 128
+found 204
+find 254 135 1999
+find 254 135 1999
+found 172
+find 231 70 1999
+find 231 70 1999
+found 128
+find 0 161 1999
+find 0 161 1999
+found 172
+find 231 1 1999
+find 231 1 1999
+find 231 1 1999
+found 16
+find 16 53 1999
+found 60
+find 16 17 1999
+found 60
+found 172
+find 172 212 1999
+find 172 212 1999
+found 231
+find 172 92 1999
+find 172 92 1999
+found 128
+find 172 19 1999
+find 172 19 1999
+find 172 19 1999
+found 60
+find 172 77 1999
+find 172 77 1999
+found 128
+find 172 109 1999
+find 172 109 1999
+found 128
+find 0 159 1999
+find 0 159 1999
+found 172
+find 172 61 1999
+find 172 61 1999
+found 128
+find 172 80 1999
+find 172 80 1999
+found 128
+found 60
+find 255 84 1999
+find 255 84 1999
+found 128
+find 16 29 1999
+found 60
+find 255 27 1999
+find 255 27 1999
+found 60
+find 204 112 1999
+find 204 112 1999
+find 204 112 1999
+found 128
+find 0 78 1999
+find 0 78 1999
+found 128
+find 255 2 1999
+find 255 2 1999
+found 16
+find 172 191 1999
+found 204
+found 254
+find 0 169 1999
+find 0 169 1999
+found 172
+find 231 48 1999
+find 231 48 1999
+found 60
+find 0 110 1999
+find 0 110 1999
+found 128
+found 128
+find 201 20 1999
+find 201 20 1999
+find 201 20 1999
+found 27
+find 165 84 1999
+find 165 84 1999
+found 141
+found 244
+find 0 72 1999
+find 0 72 1999
+found 141
+find 0 189 1999
+find 0 189 1999
+find 0 189 1999
+find 0 189 1999
+found 201
+find 167 33 1999
+find 167 33 1999
+find 167 33 1999
+found 56
+find 201 58 1999
+find 201 58 1999
+find 201 58 1999
+found 141
+find 201 28 1999
+find 201 28 1999
+found 56
+find 202 249 1999
+find 202 249 1999
+found 0
+find 0 236 1999
+find 0 236 1999
+find 0 236 1999
+find 0 236 1999
+found 244
+find 202 0 1999
+find 202 0 1999
+found 0
+find 167 25 1999
+find 167 25 1999
+find 167 25 1999
+found 27
+find 27 212 1999
+find 27 212 1999
+find 27 212 1999
+find 27 212 1999
+found 244
+find 165 170 1999
+find 165 170 1999
+found 201
+find 244 73 1999
+find 244 73 1999
+found 141
+find 244 182 1999
+find 244 182 1999
+find 244 182 1999
+find 244 182 1999
+found 201
+find 167 150 1999
+find 167 150 1999
+find 167 150 1999
+found 165
+find 165 64 1999
+find 165 64 1999
+found 141
+find 244 87 1999
+find 244 87 1999
+found 141
+find 202 8 1999
+find 202 8 1999
+find 202 8 1999
+found 27
+found 201
+find 56 127 1999
+found 141
+find 201 153 1999
+find 201 153 1999
+found 165
+find 201 142 1999
+find 201 142 1999
+found 165
+find 202 105 1999
+find 202 105 1999
+find 202 105 1999
+found 141
+found 201
+find 201 134 1999
+find 201 134 1999
+find 201 134 1999
+found 141
+find 201 163 1999
+find 201 163 1999
+found 165
+found 201
+find 141 143 1999
+found 165
+find 27 76 1999
+find 27 76 1999
+found 141
+find 165 106 1999
+find 165 106 1999
+found 141
+find 0 156 1999
+find 0 156 1999
+found 165
+find 167 97 1999
+find 167 97 1999
+found 141
+find 202 144 1999
+find 202 144 1999
+found 165
+find 167 237 1999
+find 167 237 1999
+find 167 237 1999
+found 244
+find 202 254 1999
+find 202 254 1999
+found 0
+find 165 41 1999
+find 165 41 1999
+find 165 41 1999
+found 56
+find 27 203 1999
+find 27 203 1999
+find 27 203 1999
+find 27 203 1999
+found 244
+find 244 71 1999
+find 244 71 1999
+found 141
+found 0
+find 202 117 1999
+find 202 117 1999
+find 202 117 1999
+found 141
+find 27 180 1999
+find 27 180 1999
+find 27 180 1999
+found 201
+find 244 74 1999
+find 244 74 1999
+found 141
+find 165 62 1999
+find 165 62 1999
+found 141
+find 27 78 1999
+find 27 78 1999
+found 141
+found 141
+find 165 138 1999
+find 165 138 1999
+found 141
+find 0 214 1999
+find 0 214 1999
+find 0 214 1999
+find 0 214 1999
+found 244
+find 202 122 1999
+find 202 122 1999
+find 202 122 1999
+found 141
+find 167 235 1999
+find 167 235 1999
+find 167 235 1999
+found 244
+find 244 14 1999
+find 244 14 1999
+found 27
+find 202 2 1999
+find 202 2 1999
+find 202 2 1999
+found 27
+found 141
+find 141 164 1999
+found 165
+find 0 135 1999
+find 0 135 1999
+found 141
+find 27 158 1999
+find 27 158 1999
+found 165
+find 202 17 1999
+find 202 17 1999
+find 202 17 1999
+found 27
+find 27 59 1999
+find 27 59 1999
+found 141
+find 0 27 1999
+found 27
+find 56 201 1999
+find 56 201 1999
+find 56 201 1999
+find 56 201 1999
+found 201
+find 141 211 1999
+find 141 211 1999
+find 141 211 1999
+found 244
+find 0 233 1999
+find 0 233 1999
+find 0 233 1999
+find 0 233 1999
+found 244
+find 0 169 1999
+find 0 169 1999
+find 0 169 1999
+find 0 169 1999
+found 201
+find 244 121 1999
+find 244 121 1999
+found 141
+find 244 69 1999
+find 244 69 1999
+found 141
+find 27 31 1999
+found 56
+found 27
+find 167 193 1999
+found 201
+find 167 232 1999
+find 167 232 1999
+find 167 232 1999
+found 244
+find 56 94 1999
+found 141
+find 165 223 1999
+find 165 223 1999
+find 165 223 1999
+found 244
+find 0 198 1999
+find 0 198 1999
+find 0 198 1999
+find 0 198 1999
+found 201
+find 167 227 1999
+find 167 227 1999
+find 167 227 1999
+found 244
+find 202 251 1999
+find 202 251 1999
+found 0
+find 56 107 1999
+found 141
+find 56 65 1999
+found 141
+find 202 222 1999
+found 244
+find 0 16 1999
+found 27
+find 165 66 1999
+find 165 66 1999
+found 141
+find 165 90 1999
+find 165 90 1999
+found 141
+find 165 175 1999
+find 165 175 1999
+found 201
+find 201 21 1999
+find 201 21 1999
+find 201 21 1999
+found 27
+find 165 243 1999
+find 165 243 1999
+find 165 243 1999
+found 244
+find 27 108 1999
+find 27 108 1999
+found 141
+find 202 216 1999
+found 244
+found 244
+find 27 192 1999
+find 27 192 1999
+find 27 192 1999
+found 201
+find 244 139 1999
+find 244 139 1999
+found 141
+found 141
+find 27 215 1999
+find 27 215 1999
+find 27 215 1999
+find 27 215 1999
+found 244
+find 0 48 1999
+find 0 48 1999
+found 56
+find 56 155 1999
+find 56 155 1999
+found 165
+find 167 115 1999
+find 167 115 1999
+found 141
+find 165 230 1999
+find 165 230 1999
+find 165 230 1999
+found 244
+find 202 30 1999
+find 202 30 1999
+found 56
+find 0 217 1999
+find 0 217 1999
+find 0 217 1999
+find 0 217 1999
+found 244
+find 201 162 1999
+find 201 162 1999
+found 165
+find 165 177 1999
+find 165 177 1999
+found 201
+find 56 184 1999
+find 56 184 1999
+find 56 184 1999
+find 56 184 1999
+found 201
+find 201 125 1999
+find 201 125 1999
+find 201 125 1999
+found 141
+find 0 168 1999
+find 0 168 1999
+find 0 168 1999
+find 0 168 1999
+found 201
+find 27 137 1999
+find 27 137 1999
+found 141
+find 202 173 1999
+find 202 173 1999
+find 202 173 1999
+find 202 173 1999
+found 201
+find 56 7 1999
+find 56 7 1999
+find 56 7 1999
+find 56 7 1999
+found 27
+found 165
+find 201 18 1999
+find 201 18 1999
+find 201 18 1999
+found 27
+find 244 36 1999
+find 244 36 1999
+found 56
+find 56 15 1999
+find 56 15 1999
+find 56 15 1999
+find 56 15 1999
+found 27
+find 202 47 1999
+find 202 47 1999
+found 56
+found 201
+find 0 38 1999
+find 0 38 1999
+found 56
+find 244 145 1999
+find 244 145 1999
+found 165
+find 141 206 1999
+find 141 206 1999
+find 141 206 1999
+found 244
+find 167 209 1999
+find 167 209 1999
+find 167 209 1999
+found 244
+find 27 197 1999
+find 27 197 1999
+find 27 197 1999
+found 201
+found 201
+find 167 126 1999
+find 167 126 1999
+found 141
+found 0
+find 27 181 1999
+find 27 181 1999
+find 27 181 1999
+found 201
+find 202 120 1999
+find 202 120 1999
+find 202 120 1999
+found 141
+find 165 166 1999
+found 167
+find 202 187 1999
+find 202 187 1999
+find 202 187 1999
+find 202 187 1999
+found 201
+found 244
+find 167 19 1999
+find 167 19 1999
+find 167 19 1999
+found 27
+found 0
+find 27 240 1999
+find 27 240 1999
+find 27 240 1999
+find 27 240 1999
+found 244
+find 0 103 1999
+find 0 103 1999
+found 141
+find 82 244 1999
+find 82 244 1999
+found 0
+find 0 152 1999
+find 0 152 1999
+find 0 152 1999
+find 0 152 1999
+find 0 152 1999
+found 202
+find 83 1 1999
+find 83 1 1999
+find 83 1 1999
+found 56
+find 82 232 1999
+find 82 232 1999
+found 237
+find 83 242 1999
+find 83 242 1999
+found 0
+find 56 82 1999
+find 56 82 1999
+found 82
+find 237 153 1999
+find 237 153 1999
+find 237 153 1999
+find 237 153 1999
+found 202
+find 82 255 1999
+find 82 255 1999
+found 0
+find 64 104 1999
+find 64 104 1999
+find 64 104 1999
+find 64 104 1999
+found 202
+find 64 142 1999
+find 64 142 1999
+find 64 142 1999
+find 64 142 1999
+found 202
+find 83 213 1999
+find 83 213 1999
+found 237
+find 83 77 1999
+find 83 77 1999
+find 83 77 1999
+find 83 77 1999
+found 82
+find 202 8 1999
+find 202 8 1999
+find 202 8 1999
+found 56
+found 237
+find 82 7 1999
+find 82 7 1999
+find 82 7 1999
+found 56
+find 83 226 1999
+find 83 226 1999
+found 237
+find 0 122 1999
+find 0 122 1999
+find 0 122 1999
+find 0 122 1999
+find 0 122 1999
+found 202
+found 56
+find 64 168 1999
+find 64 168 1999
+find 64 168 1999
+find 64 168 1999
+found 202
+found 56
+find 91 78 1999
+find 91 78 1999
+find 91 78 1999
+find 91 78 1999
+found 82
+find 83 141 1999
+find 83 141 1999
+find 83 141 1999
+found 202
+find 0 17 1999
+found 56
+find 0 75 1999
+find 0 75 1999
+found 82
+find 237 46 1999
+find 237 46 1999
+found 56
+find 91 161 1999
+find 91 161 1999
+found 202
+find 202 249 1999
+find 202 249 1999
+found 0
+find 91 221 1999
+find 91 221 1999
+found 237
+find 237 188 1999
+find 237 188 1999
+find 237 188 1999
+find 237 188 1999
+found 202
+find 56 222 1999
+find 56 222 1999
+found 237
+find 237 121 1999
+find 237 121 1999
+find 237 121 1999
+find 237 121 1999
+found 202
+find 91 25 1999
+find 91 25 1999
+find 91 25 1999
+found 56
+find 83 4 1999
+find 83 4 1999
+find 83 4 1999
+found 56
+find 202 54 1999
+find 202 54 1999
+find 202 54 1999
+found 56
+found 202
+find 82 181 1999
+find 82 181 1999
+find 82 181 1999
+found 202
+find 91 151 1999
+find 91 151 1999
+found 202
+find 94 89 1999
+find 94 89 1999
+find 94 89 1999
+find 94 89 1999
+find 94 89 1999
+found 91
+find 0 97 1999
+find 0 97 1999
+find 0 97 1999
+find 0 97 1999
+find 0 97 1999
+found 202
+find 83 76 1999
+find 83 76 1999
+find 83 76 1999
+find 83 76 1999
+found 82
+find 237 11 1999
+find 237 11 1999
+found 56
+find 237 34 1999
+find 237 34 1999
+found 56
+find 237 69 1999
+find 237 69 1999
+find 237 69 1999
+found 82
+found 202
+find 202 50 1999
+find 202 50 1999
+find 202 50 1999
+found 56
+find 94 205 1999
+find 94 205 1999
+found 237
+find 94 202 1999
+found 202
+find 83 13 1999
+find 83 13 1999
+find 83 13 1999
+found 56
+find 0 9 1999
+found 56
+find 94 55 1999
+find 94 55 1999
+find 94 55 1999
+found 56
+find 64 190 1999
+find 64 190 1999
+find 64 190 1999
+find 64 190 1999
+found 202
+find 83 35 1999
+find 83 35 1999
+find 83 35 1999
+found 56
+find 56 154 1999
+find 56 154 1999
+find 56 154 1999
+found 202
+find 64 171 1999
+find 64 171 1999
+find 64 171 1999
+find 64 171 1999
+found 202
+find 94 10 1999
+find 94 10 1999
+find 94 10 1999
+found 56
+find 56 72 1999
+find 56 72 1999
+found 82
+find 202 56 1999
+find 202 56 1999
+find 202 56 1999
+found 56
+found 202
+find 94 178 1999
+found 202
+find 94 196 1999
+found 202
+find 56 172 1999
+find 56 172 1999
+find 56 172 1999
+found 202
+find 83 114 1999
+find 83 114 1999
+find 83 114 1999
+found 202
+find 64 137 1999
+find 64 137 1999
+find 64 137 1999
+find 64 137 1999
+found 202
+find 94 88 1999
+find 94 88 1999
+find 94 88 1999
+find 94 88 1999
+find 94 88 1999
+found 91
+find 94 227 1999
+find 94 227 1999
+found 237
+find 64 208 1999
+find 64 208 1999
+found 237
+find 237 185 1999
+find 237 185 1999
+find 237 185 1999
+find 237 185 1999
+found 202
+find 237 99 1999
+find 237 99 1999
+find 237 99 1999
+find 237 99 1999
+found 202
+find 202 20 1999
+find 202 20 1999
+find 202 20 1999
+found 56
+find 237 144 1999
+find 237 144 1999
+find 237 144 1999
+find 237 144 1999
+found 202
+find 56 156 1999
+find 56 156 1999
+find 56 156 1999
+found 202
+find 64 238 1999
+find 64 238 1999
+find 64 238 1999
+found 0
+find 0 24 1999
+found 56
+find 83 27 1999
+find 83 27 1999
+find 83 27 1999
+found 56
+find 0 167 1999
+find 0 167 1999
+find 0 167 1999
+find 0 167 1999
+find 0 167 1999
+found 202
+found 202
+find 0 62 1999
+find 0 62 1999
+found 64
+find 237 28 1999
+find 237 28 1999
+found 56
+find 82 159 1999
+find 82 159 1999
+find 82 159 1999
+found 202
+find 83 65 1999
+find 83 65 1999
+find 83 65 1999
+find 83 65 1999
+found 82
+find 82 95 1999
+find 82 95 1999
+find 82 95 1999
+found 202
+find 202 74 1999
+find 202 74 1999
+find 202 74 1999
+found 82
+find 91 33 1999
+find 91 33 1999
+find 91 33 1999
+found 56
+found 56
+find 82 38 1999
+find 82 38 1999
+find 82 38 1999
+found 56
+find 83 64 1999
+find 83 64 1999
+find 83 64 1999
+found 64
+find 0 86 1999
+find 0 86 1999
+find 0 86 1999
+find 0 86 1999
+found 91
+find 91 246 1999
+find 91 246 1999
+found 0
+find 237 70 1999
+find 237 70 1999
+find 237 70 1999
+found 82
+find 91 187 1999
+find 91 187 1999
+found 202
+find 91 254 1999
+find 91 254 1999
+found 0
+find 56 110 1999
+find 56 110 1999
+find 56 110 1999
+found 202
+find 0 175 1999
+find 0 175 1999
+find 0 175 1999
+find 0 175 1999
+find 0 175 1999
+found 202
+find 0 212 1999
+find 0 212 1999
+found 237
+find 94 118 1999
+found 202
+find 83 15 1999
+find 83 15 1999
+find 83 15 1999
+found 56
+find 94 107 1999
+found 202
+find 64 105 1999
+find 64 105 1999
+find 64 105 1999
+find 64 105 1999
+found 202
+find 91 158 1999
+find 91 158 1999
+found 202
+find 0 139 1999
+find 0 139 1999
+find 0 139 1999
+find 0 139 1999
+find 0 139 1999
+found 202
+find 91 241 1999
+find 91 241 1999
+found 0
+found 0
+find 83 132 1999
+find 83 132 1999
+find 83 132 1999
+found 202
+find 64 23 1999
+find 64 23 1999
+find 64 23 1999
+find 64 23 1999
+found 56
+found 202
+find 83 166 1999
+find 83 166 1999
+find 83 166 1999
+found 202
+find 82 37 1999
+find 82 37 1999
+find 82 37 1999
+found 56
+find 64 195 1999
+find 64 195 1999
+find 64 195 1999
+find 64 195 1999
+found 202
+find 83 129 1999
+find 83 129 1999
+find 83 129 1999
+found 202
+find 237 250 1999
+found 0
+find 94 150 1999
+found 202
+find 91 160 1999
+find 91 160 1999
+found 202
+find 237 135 1999
+find 237 135 1999
+find 237 135 1999
+find 237 135 1999
+found 202
+find 56 201 1999
+find 56 201 1999
+find 56 201 1999
+found 202
+find 91 52 1999
+find 91 52 1999
+find 91 52 1999
+found 56
+find 56 128 1999
+find 56 128 1999
+find 56 128 1999
+found 202
+find 94 215 1999
+find 94 215 1999
+found 237
+find 56 228 1999
+find 56 228 1999
+found 237
+find 83 252 1999
+find 83 252 1999
+found 0
+find 64 21 1999
+find 64 21 1999
+find 64 21 1999
+find 64 21 1999
+found 56
+find 82 184 1999
+find 82 184 1999
+find 82 184 1999
+found 202
+find 64 233 1999
+find 64 233 1999
+found 237
+find 91 236 1999
+find 91 236 1999
+found 237
+find 91 223 1999
+find 91 223 1999
+found 237
+find 237 102 1999
+find 237 102 1999
+find 237 102 1999
+find 237 102 1999
+found 202
+find 83 0 1999
+find 83 0 1999
+found 0
+find 94 108 1999
+found 202
+find 82 106 1999
+find 82 106 1999
+find 82 106 1999
+found 202
+find 0 72 1999
+find 0 72 1999
+find 0 72 1999
+found 94
+find 115 22 1999
+find 115 22 1999
+found 37
+found 241
+find 37 150 1999
+find 37 150 1999
+found 150
+find 94 140 1999
+find 94 140 1999
+found 150
+find 115 86 1999
+find 115 86 1999
+find 115 86 1999
+find 115 86 1999
+found 94
+find 37 70 1999
+find 37 70 1999
+found 94
+find 204 148 1999
+find 204 148 1999
+find 204 148 1999
+found 150
+find 0 120 1999
+find 0 120 1999
+find 0 120 1999
+found 150
+find 0 29 1999
+found 37
+found 241
+find 94 160 1999
+find 94 160 1999
+found 204
+find 37 251 1999
+find 37 251 1999
+find 37 251 1999
+found 0
+find 220 105 1999
+find 220 105 1999
+found 115
+find 50 71 1999
+found 94
+find 0 53 1999
+find 0 53 1999
+find 0 53 1999
+found 94
+find 150 100 1999
+find 150 100 1999
+find 150 100 1999
+found 115
+find 50 146 1999
+find 50 146 1999
+found 150
+find 220 82 1999
+find 220 82 1999
+find 220 82 1999
+found 94
+find 204 210 1999
+found 220
+find 241 189 1999
+find 241 189 1999
+find 241 189 1999
+found 204
+find 241 38 1999
+find 241 38 1999
+found 50
+find 50 132 1999
+find 50 132 1999
+found 150
+find 150 252 1999
+find 150 252 1999
+find 150 252 1999
+found 0
+find 204 238 1999
+find 204 238 1999
+found 241
+find 220 177 1999
+find 220 177 1999
+find 220 177 1999
+found 204
+found 94
+found 94
+find 94 159 1999
+find 94 159 1999
+found 204
+find 204 114 1999
+find 204 114 1999
+found 115
+find 37 121 1999
+find 37 121 1999
+found 150
+found 204
+find 94 25 1999
+find 94 25 1999
+find 94 25 1999
+found 37
+find 220 57 1999
+find 220 57 1999
+find 220 57 1999
+found 94
+find 241 93 1999
+find 241 93 1999
+found 94
+find 115 23 1999
+find 115 23 1999
+found 37
+find 37 49 1999
+found 50
+find 220 5 1999
+find 220 5 1999
+found 37
+find 220 234 1999
+found 241
+find 50 219 1999
+find 50 219 1999
+found 220
+find 0 224 1999
+find 0 224 1999
+find 0 224 1999
+found 241
+find 0 39 1999
+find 0 39 1999
+found 50
+find 50 83 1999
+found 94
+found 150
+found 204
+find 50 235 1999
+find 50 235 1999
+find 50 235 1999
+found 241
+find 37 118 1999
+find 37 118 1999
+found 150
+find 220 200 1999
+find 220 200 1999
+find 220 200 1999
+found 204
+find 241 185 1999
+find 241 185 1999
+find 241 185 1999
+found 204
+find 0 9 1999
+found 37
+find 0 28 1999
+found 37
+find 94 245 1999
+find 94 245 1999
+found 0
+find 204 244 1999
+find 204 244 1999
+found 0
+find 37 131 1999
+find 37 131 1999
+found 150
+find 220 35 1999
+find 220 35 1999
+found 37
+find 50 108 1999
+find 50 108 1999
+found 115
+find 220 203 1999
+find 220 203 1999
+find 220 203 1999
+found 204
+find 37 81 1999
+find 37 81 1999
+found 94
+find 115 254 1999
+find 115 254 1999
+find 115 254 1999
+found 0
+find 150 242 1999
+find 150 242 1999
+find 150 242 1999
+found 0
+found 37
+find 37 239 1999
+find 37 239 1999
+find 37 239 1999
+found 241
+find 37 90 1999
+find 37 90 1999
+found 94
+find 204 241 1999
+find 204 241 1999
+found 241
+find 204 106 1999
+find 204 106 1999
+found 115
+find 150 215 1999
+find 150 215 1999
+found 220
+find 94 237 1999
+find 94 237 1999
+find 94 237 1999
+found 241
+find 204 84 1999
+find 204 84 1999
+find 204 84 1999
+found 94
+find 115 10 1999
+find 115 10 1999
+found 37
+find 241 31 1999
+find 241 31 1999
+found 37
+find 115 175 1999
+find 115 175 1999
+found 204
+find 50 27 1999
+find 50 27 1999
+find 50 27 1999
+find 50 27 1999
+found 37
+find 37 221 1999
+find 37 221 1999
+find 37 221 1999
+found 241
+find 220 112 1999
+find 220 112 1999
+found 115
+find 204 147 1999
+find 204 147 1999
+find 204 147 1999
+found 150
+find 150 209 1999
+find 150 209 1999
+found 220
+find 50 182 1999
+find 50 182 1999
+find 50 182 1999
+found 204
+find 204 17 1999
+find 204 17 1999
+find 204 17 1999
+found 37
+find 115 176 1999
+find 115 176 1999
+found 204
+find 0 42 1999
+find 0 42 1999
+found 50
+find 115 63 1999
+find 115 63 1999
+find 115 63 1999
+find 115 63 1999
+found 94
+found 204
+find 50 97 1999
+find 50 97 1999
+found 115
+find 0 156 1999
+find 0 156 1999
+found 204
+find 115 171 1999
+find 115 171 1999
+found 204
+find 94 127 1999
+find 94 127 1999
+found 150
+find 0 111 1999
+find 0 111 1999
+found 115
+find 204 205 1999
+found 220
+find 220 151 1999
+find 220 151 1999
+find 220 151 1999
+found 204
+find 220 141 1999
+find 220 141 1999
+find 220 141 1999
+found 150
+find 241 187 1999
+find 241 187 1999
+find 241 187 1999
+found 204
+find 37 126 1999
+find 37 126 1999
+found 150
+found 204
+find 0 223 1999
+find 0 223 1999
+find 0 223 1999
+found 241
+find 241 12 1999
+find 241 12 1999
+found 37
+find 0 2 1999
+found 37
+find 94 24 1999
+find 94 24 1999
+find 94 24 1999
+found 37
+find 220 145 1999
+find 220 145 1999
+find 220 145 1999
+found 150
+find 241 181 1999
+find 241 181 1999
+find 241 181 1999
+found 204
+find 0 201 1999
+find 0 201 1999
+found 204
+find 204 15 1999
+find 204 15 1999
+find 204 15 1999
+found 37
+find 220 50 1999
+find 220 50 1999
+found 50
+find 50 65 1999
+found 94
+found 94
+find 94 115 1999
+found 115
+find 37 58 1999
+find 37 58 1999
+found 94
+find 0 37 1999
+found 37
+find 94 116 1999
+find 94 116 1999
+found 150
+find 37 139 1999
+find 37 139 1999
+found 150
+find 37 40 1999
+found 50
+find 0 69 1999
+find 0 69 1999
+find 0 69 1999
+found 94
+find 0 217 1999
+find 0 217 1999
+find 0 217 1999
+found 220
+found 94
+find 37 64 1999
+find 37 64 1999
+found 94
+find 150 174 1999
+found 204
+find 204 99 1999
+find 204 99 1999
+found 115
+find 150 183 1999
+found 204
+find 204 240 1999
+find 204 240 1999
+found 241
+find 115 166 1999
+find 115 166 1999
+found 204
+find 0 188 1999
+find 0 188 1999
+found 204
+find 220 163 1999
+find 220 163 1999
+find 220 163 1999
+found 204
+find 204 78 1999
+find 204 78 1999
+find 204 78 1999
+found 94
+find 220 54 1999
+find 220 54 1999
+find 220 54 1999
+found 94
+find 0 199 1999
+find 0 199 1999
+found 204
+found 94
+find 150 104 1999
+find 150 104 1999
+find 150 104 1999
+found 115
+find 37 208 1999
+find 37 208 1999
+found 220
+found 150
+find 105 118 1999
+found 172
+find 172 249 1999
+find 172 249 1999
+found 0
+find 105 117 1999
+found 172
+find 195 160 1999
+find 195 160 1999
+found 172
+find 195 59 1999
+find 195 59 1999
+find 195 59 1999
+found 60
+find 179 57 1999
+find 179 57 1999
+find 179 57 1999
+found 60
+find 29 122 1999
+find 29 122 1999
+found 172
+find 60 217 1999
+find 60 217 1999
+found 230
+find 230 41 1999
+find 230 41 1999
+find 230 41 1999
+found 60
+find 105 211 1999
+find 105 211 1999
+find 105 211 1999
+found 230
+found 172
+find 29 216 1999
+find 29 216 1999
+find 29 216 1999
+found 230
+found 60
+find 0 190 1999
+find 0 190 1999
+find 0 190 1999
+found 195
+find 105 54 1999
+find 105 54 1999
+find 105 54 1999
+found 60
+find 230 175 1999
+find 230 175 1999
+find 230 175 1999
+found 179
+find 230 78 1999
+find 230 78 1999
+found 105
+find 230 158 1999
+find 230 158 1999
+found 172
+find 60 9 1999
+find 60 9 1999
+find 60 9 1999
+find 60 9 1999
+found 29
+find 105 185 1999
+find 105 185 1999
+find 105 185 1999
+found 195
+found 29
+find 0 151 1999
+find 0 151 1999
+found 172
+find 179 24 1999
+find 179 24 1999
+found 29
+find 29 96 1999
+find 29 96 1999
+found 105
+find 230 82 1999
+find 230 82 1999
+found 105
+find 179 146 1999
+find 179 146 1999
+find 179 146 1999
+found 172
+find 29 91 1999
+find 29 91 1999
+found 105
+found 60
+find 172 18 1999
+find 172 18 1999
+found 29
+find 230 34 1999
+find 230 34 1999
+find 230 34 1999
+found 60
+find 179 232 1999
+find 179 232 1999
+found 0
+find 60 136 1999
+find 60 136 1999
+found 172
+find 33 66 1999
+find 33 66 1999
+found 105
+find 179 98 1999
+find 179 98 1999
+found 105
+find 230 21 1999
+find 230 21 1999
+found 29
+find 179 65 1999
+find 179 65 1999
+found 105
+find 179 97 1999
+find 179 97 1999
+found 105
+find 230 79 1999
+find 230 79 1999
+found 105
+find 0 189 1999
+find 0 189 1999
+find 0 189 1999
+found 195
+found 230
+found 230
+find 29 88 1999
+find 29 88 1999
+found 105
+find 33 121 1999
+find 33 121 1999
+found 172
+find 172 199 1999
+find 172 199 1999
+found 230
+found 179
+found 29
+find 195 171 1999
+find 195 171 1999
+found 172
+find 29 196 1999
+find 29 196 1999
+find 29 196 1999
+found 230
+found 105
+find 0 197 1999
+find 0 197 1999
+find 0 197 1999
+found 230
+find 172 67 1999
+find 172 67 1999
+found 105
+find 33 224 1999
+find 33 224 1999
+find 33 224 1999
+found 230
+find 195 53 1999
+find 195 53 1999
+find 195 53 1999
+found 60
+found 60
+find 179 128 1999
+find 179 128 1999
+find 179 128 1999
+found 172
+found 172
+find 172 40 1999
+find 172 40 1999
+find 172 40 1999
+found 60
+find 179 56 1999
+find 179 56 1999
+find 179 56 1999
+found 60
+find 230 84 1999
+find 230 84 1999
+found 105
+find 230 16 1999
+find 230 16 1999
+found 29
+find 179 131 1999
+find 179 131 1999
+find 179 131 1999
+found 172
+find 105 50 1999
+find 105 50 1999
+find 105 50 1999
+found 60
+find 230 89 1999
+find 230 89 1999
+found 105
+find 60 188 1999
+find 60 188 1999
+find 60 188 1999
+found 195
+find 179 225 1999
+find 179 225 1999
+found 230
+find 60 31 1999
+find 60 31 1999
+find 60 31 1999
+found 33
+find 195 227 1999
+found 230
+find 33 210 1999
+find 33 210 1999
+find 33 210 1999
+found 230
+find 33 55 1999
+found 60
+find 29 230 1999
+find 29 230 1999
+find 29 230 1999
+found 230
+found 60
+find 179 90 1999
+find 179 90 1999
+found 105
+find 230 254 1999
+found 0
+find 0 28 1999
+found 29
+find 29 219 1999
+find 29 219 1999
+find 29 219 1999
+found 230
+find 33 153 1999
+find 33 153 1999
+found 172
+find 0 183 1999
+find 0 183 1999
+find 0 183 1999
+found 195
+find 105 154 1999
+found 172
+find 179 33 1999
+find 179 33 1999
+find 179 33 1999
+found 33
+find 29 215 1999
+find 29 215 1999
+find 29 215 1999
+found 230
+find 33 105 1999
+find 33 105 1999
+found 105
+find 172 237 1999
+find 172 237 1999
+found 0
+find 195 114 1999
+find 195 114 1999
+found 172
+find 230 83 1999
+find 230 83 1999
+found 105
+find 33 187 1999
+find 33 187 1999
+find 33 187 1999
+found 195
+found 230
+find 105 200 1999
+find 105 200 1999
+find 105 200 1999
+found 230
+found 172
+find 195 19 1999
+find 195 19 1999
+find 195 19 1999
+found 29
+found 172
+found 29
+find 60 6 1999
+find 60 6 1999
+find 60 6 1999
+find 60 6 1999
+found 29
+find 230 11 1999
+find 230 11 1999
+found 29
+find 33 253 1999
+find 33 253 1999
+find 33 253 1999
+found 0
+find 0 44 1999
+find 0 44 1999
+found 60
+find 179 123 1999
+find 179 123 1999
+find 179 123 1999
+found 172
+find 33 35 1999
+found 60
+find 105 107 1999
+found 172
+found 195
+find 195 213 1999
+found 230
+find 33 20 1999
+find 33 20 1999
+find 33 20 1999
+found 29
+find 105 222 1999
+find 105 222 1999
+find 105 222 1999
+found 230
+find 179 198 1999
+find 179 198 1999
+found 230
+find 0 12 1999
+found 29
+find 0 22 1999
+found 29
+find 105 163 1999
+found 172
+find 29 64 1999
+find 29 64 1999
+found 105
+find 60 72 1999
+found 105
+find 60 124 1999
+find 60 124 1999
+found 172
+find 105 39 1999
+find 105 39 1999
+find 105 39 1999
+found 60
+find 230 100 1999
+find 230 100 1999
+found 105
+find 195 86 1999
+find 195 86 1999
+find 195 86 1999
+found 105
+find 179 140 1999
+find 179 140 1999
+find 179 140 1999
+found 172
+find 29 204 1999
+find 29 204 1999
+find 29 204 1999
+found 230
+find 33 159 1999
+find 33 159 1999
+found 172
+find 60 63 1999
+found 105
+find 60 231 1999
+find 60 231 1999
+find 60 231 1999
+found 0
+find 172 241 1999
+find 172 241 1999
+found 0
+find 230 52 1999
+find 230 52 1999
+find 230 52 1999
+found 60
+find 60 205 1999
+find 60 205 1999
+found 230
+find 33 242 1999
+find 33 242 1999
+find 33 242 1999
+found 0
+find 230 103 1999
+find 230 103 1999
+found 105
+find 179 4 1999
+find 179 4 1999
+found 29
+found 105
+find 33 129 1999
+find 33 129 1999
+found 172
+find 33 95 1999
+find 33 95 1999
+found 105
+find 33 207 1999
+find 33 207 1999
+find 33 207 1999
+found 230
+find 179 60 1999
+find 179 60 1999
+find 179 60 1999
+found 60
