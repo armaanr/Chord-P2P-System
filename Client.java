@@ -13,18 +13,18 @@ public class Client extends Thread
     public int base_port;
     public InetAddress IP;
     public Map<Integer, ProcessInfo> nodes;
-
+    
     // For receiving acknowledgements.
     public int receiving_port;
     public ServerSocket receiving_socket;
     boolean need_ack;
     public ProcessInfo self_info;
-
+    
     // Stores commands until they can be sent to the nodes.
     public Queue<String> Q;
-
+    
     public Lock mutex;
-
+    
     /*
      * Client constructor fills in basic fields from command line.
      * The rest of the fields are filled in by the configuration
@@ -49,8 +49,8 @@ public class Client extends Thread
             e.printStackTrace();
         }
     }
-
-    /* 
+    
+    /*
      * Parses commands and executes the applicable function.
      * Formats the command based on the protocol given in the MP specs
      * before sending it to the assigned replica.
@@ -59,20 +59,20 @@ public class Client extends Thread
     {
         @SuppressWarnings("resource")
         int retval = 0;
-
+        
         String[] tokens = line.split(" ");
-
+        
         // <command> <new_node_id> <node0 ip> <node0 port>
         if(tokens[0].equals("join") && (tokens.length >= 2))
-        {		    	 
+        {
             int node_id = Integer.parseInt(tokens[1]);
             // Adding Node 0 information.
             String message =    "join"
-                                + " " + node_id
-                                + " " + "127.0.0.1"
-                                + " " + Integer.toString(base_port)
-                                + " " + Integer.toString(this.min_delay)
-                                + " " + Integer.toString(this.max_delay);
+            + " " + node_id
+            + " " + "127.0.0.1"
+            + " " + Integer.toString(base_port)
+            + " " + Integer.toString(this.min_delay)
+            + " " + Integer.toString(this.max_delay);
             this.mutex.lock();
             if (!this.need_ack) {
                 this.join(node_id, message);
@@ -85,12 +85,12 @@ public class Client extends Thread
         }
         else if (tokens[0].equals("crash"))
         {
-        	int node_id = Integer.parseInt(tokens[1]);
-        	ProcessInfo node = this.nodes.get(node_id);
-        	
+            int node_id = Integer.parseInt(tokens[1]);
+            ProcessInfo node = this.nodes.get(node_id);
+            nodes.remove(node_id);
             // Adding Node 0 information.
             String message = "crash"
-                             + " " + node_id;
+            + " " + node_id;
             this.mutex.lock();
             if (!this.need_ack) {
                 this.crash(node, message);
@@ -103,23 +103,23 @@ public class Client extends Thread
         }
         else if (tokens[0].equals("find"))
         {
-        	int node_id = Integer.parseInt(tokens[1]);
-        	int key = Integer.parseInt(tokens[2]);
-        	
-        	ProcessInfo targetNode = null;
-        	if(nodes.containsKey(node_id))
-        	{
-        		targetNode = nodes.get(node_id);
-        	}
-        	else
-        	{
-        		System.out.println(node_id + "does not exist");
-        	}
-        	
+            int node_id = Integer.parseInt(tokens[1]);
+            int key = Integer.parseInt(tokens[2]);
+            
+            ProcessInfo targetNode = null;
+            if(nodes.containsKey(node_id))
+            {
+                targetNode = nodes.get(node_id);
+            }
+            else
+            {
+                System.out.println(node_id + "does not exist");
+            }
+            
             // Adding Node 0 information.
             String message = "find"
-                             + " " + node_id
-                             + " " + key;
+            + " " + node_id
+            + " " + key;
             this.mutex.lock();
             if (!this.need_ack) {
                 this.find(targetNode, message);
@@ -174,8 +174,8 @@ public class Client extends Thread
         
         return retval;
     }
-
-
+    
+    
     public void show(int node_id, String print)
     {
         ProcessInfo node = this.nodes.get(node_id);
@@ -191,7 +191,7 @@ public class Client extends Thread
                 System.out.println(Integer.toString(node_id) + " does not exist");
         }
     }
-
+    
     /*
      * Runs on its own thread to receive and handle acknowledgements from the
      * replica server.
@@ -202,49 +202,49 @@ public class Client extends Thread
         Runnable sender;
         String message;
         int node_id;
-
+        
         // Receives message.
         DataInputStream in = new DataInputStream(receiver.getInputStream());
         String ack = "";
         ack = in.readUTF();
-
+        
         // Handles the next message in Q since the ack from the previous was
         // received. If there is no message to be sent, then nothing happens
         // and need_ack remains false.
         this.mutex.lock();
         this.need_ack = false;
-//        try{
-            if (!this.Q.isEmpty()) {
-                message = this.Q.poll();
-                String[] tokens = message.split(" ");
-                String action = tokens[0];
-                node_id = Integer.parseInt(tokens[1]);
-                switch (action) {
-                    case "join":
-                        this.join(node_id, message);
-                        break;
-                    case "crash":
-                        System.out.println(node_id + " crashed.");
-                        break;
-                    case "find":
-                        System.out.println("Found the key in Node =>" + node_id);
-                        break;
-                    case "show":
-                        this.show(node_id, tokens[2]);
-                        break;
-                }
+        //        try{
+        if (!this.Q.isEmpty()) {
+            message = this.Q.poll();
+            String[] tokens = message.split(" ");
+            String action = tokens[0];
+            node_id = Integer.parseInt(tokens[1]);
+            switch (action) {
+                case "join":
+                    this.join(node_id, message);
+                    break;
+                case "crash":
+                    System.out.println(node_id + " crashed.");
+                    break;
+                case "find":
+                    System.out.println("Found the key in Node =>" + node_id);
+                    break;
+                case "show":
+                    this.show(node_id, tokens[2]);
+                    break;
             }
-//        }
-//        catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
+        }
+        //        }
+        //        catch (InterruptedException e) {
+        //            e.printStackTrace();
+        //        }
         this.mutex.unlock();
-
+        
         System.out.println(ack);
-
+        
         receiver.close();
     }
-
+    
     /*
      * Creates a new node, then sends it a join command.
      */
@@ -269,7 +269,7 @@ public class Client extends Thread
             Runnable sender = new ClientSender(new_info, message);
             new Thread(sender).start();
             this.need_ack = true;
-         }
+        }
     }
     
     /*
@@ -286,63 +286,63 @@ public class Client extends Thread
      */
     public void find(ProcessInfo node , String message)
     {
-    	message += " " + this.self_info.portNumber;
+        message += " " + this.self_info.portNumber;
         Runnable sender = new ClientSender(node, message);
         new Thread(sender).start();
         this.need_ack = true;
     }
-
-    /* 
+    
+    /*
      * Parses the given config file to initialize the client variables.
      */
     public void readConfig(File file) throws IOException
     {
         @SuppressWarnings("resource")
         Scanner scanner = new Scanner(file);
-
+        
         if(scanner.hasNext())
         {
             String[] delays = scanner.nextLine().split(" ");
             this.min_delay = Integer.parseInt(delays[0]);
             this.max_delay = Integer.parseInt(delays[1]);
-
+            
             String[] tokens = scanner.nextLine().split(" ");
             this.base_port = Integer.parseInt(tokens[0]);
         }
     }
-
+    
     public static void main(String [] args) throws IOException
     {
         InputStream is = null;
         int i;
         char c;
         String cmd = "";
-    
-        // java Client <client port> <config filename>  
+        
+        // java Client <client port> <config filename>
         try
         {
             // Gets client's id and server's id from command line args.
             int client_port = Integer.parseInt(args[0]);
             Client client = new Client(client_port);
-
+            
             // Parses config file get information about node 0.
             String fileName = args[1];
             File file = new File(fileName);
             client.readConfig(file);
-
+            
             // Start listening for ack's.
             client.start();
-
+            
             // Creates Node 0.
             client.prepare_cmd("join 0");
-
+            
             System.out.println("Enter commands:");
-
+            
             // Reads until the end of the stream or user enters "exit"
             while((i = System.in.read()) != -1)
             {
                 c = (char) i;
-
+                
                 // Send the command if user presses presses enter.
                 if (c == '\n')
                 {
@@ -367,7 +367,7 @@ public class Client extends Thread
                 System.in.close();
         }
     }
-
+    
     public void run()
     {
         while (true) {
