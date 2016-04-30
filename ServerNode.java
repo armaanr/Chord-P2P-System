@@ -168,6 +168,14 @@ public class ServerNode extends Thread {
     {
         System.out.println("entered crash updater in "+ this.Id);
         
+        for(int i = 0; i< fingerTable.length ; i++)
+        {
+            if(fingerTable[i].Id == crashId)
+            {
+                fingerTable[i] = new ProcessInfo(replace, this.node0.portNumber + replace, localhost);
+            }
+        }
+        
         if(this.failStarter) // || ( (this.Id+128)%256 <= crashPred ) )
         {
             System.out.println("reached failStarter");
@@ -176,13 +184,6 @@ public class ServerNode extends Thread {
             return;
         }
         
-        for(int i = 0; i< fingerTable.length ; i++)
-        {
-            if(fingerTable[i].Id == crashId)
-            {
-                fingerTable[i] = new ProcessInfo(replace, this.node0.portNumber + replace, localhost);
-            }
-        }
         
         if(this.Id == crashPred)
         {
