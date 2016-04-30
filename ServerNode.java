@@ -13,11 +13,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.*;
+import java.io.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.omg.CORBA.portable.InputStream;
 
 public class ServerNode extends Thread {
 	
+    String join_report_file = "join_report.txt";
+    String find_report_file = "find_report.txt";
+
+    // Due to concurrency issues.
+    int ack_count;
+    public Lock mutex;
+
 	int Id;
 	ProcessInfo pred;
 	ProcessInfo[] fingerTable;
@@ -35,6 +46,9 @@ public class ServerNode extends Thread {
 	
 	public ServerNode(int Id, int port, ProcessInfo client) throws IOException
 	{
+        this.ack_count = 0;
+        this.mutex = new ReentrantLock(true);
+
 		this.Id = Id;
 		this.server = new ServerSocket(port, 10, localhost);
 		this.pred = null;
@@ -49,7 +63,7 @@ public class ServerNode extends Thread {
         for (int i = 0; i < 8; i++)
         {
             this.ft_info[i] = new IntervalInfo(Id, i);
-            // Initialized for debugging purposes.
+            // Just initializing the values, doesn't matter what they are.
             this.fingerTable[i] = this.self_info;
         }
     }
@@ -80,7 +94,6 @@ public class ServerNode extends Thread {
         else
         {
             this.init_ft(node_id, this.node0);
-//            this.update_others();
         }
 	}
 
@@ -91,9 +104,36 @@ public class ServerNode extends Thread {
     public void init_ft(int node_id, ProcessInfo node0)
     {
         String message = "j " + Integer.toString(node_id);
-//        this.delayGenerator();
+        this.delayGenerator();
         Runnable sender = new ClientSender(node0, message);
         new Thread(sender).start();
+//        log(message);
+    }
+
+    /*
+     * Can be used to log interactions between nodes. Messages used for the
+     * find command are recorded in find_report_file and messages used for
+     * join are recorded in join_report_file. This is the function used to
+     * calculate the average number of messages in the report.
+     */
+    public void log(String message)
+    {
+        String[] tokens = message.split(" ");
+        String report_file = "";
+        if (tokens[0].equals("find") || tokens[0].equals("found"))
+            report_file = this.find_report_file;
+        else
+            report_file = this.join_report_file;
+
+        try{
+            Writer output = new BufferedWriter(new FileWriter(report_file, true));
+            output.append(message+"\n");
+            output.close();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     /*
@@ -106,12 +146,7 @@ public class ServerNode extends Thread {
         String[] tokens = purpose.split(" ");
         String message = "";
 
-//        System.out.println("node id: " + Integer.toString(node_id)
-//                            + " pred.Id " + Integer.toString(this.pred.Id)
-//                            + " this.Id " + Integer.toString(this.Id));
-
         // Checks if current node is node_id's successor.
-//        if (this.
         int pred_comp = this.pred.Id + 1;
         if (contains(node_id, this.pred.Id+1, this.Id+1))
         {
@@ -125,9 +160,10 @@ public class ServerNode extends Thread {
                     ProcessInfo receiver = new ProcessInfo(requester_id,
                                                             this.node0.portNumber+requester_id,
                                                             localhost);
-//                    this.delayGenerator();
+                    this.delayGenerator();
                     Runnable sender = new ClientSender(receiver, message);
                     new Thread(sender).start();
+//                    this.log(message);
                     break;
             }
         }
@@ -144,42 +180,26 @@ public class ServerNode extends Thread {
                     message = purpose;
                     break;
             }
-//            this.delayGenerator();
+            this.delayGenerator();
             Runnable sender = new ClientSender(cpf, message);
             new Thread(sender).start();
-//            System.out.println("pred_id: " + Integer.toString(this.pred.Id)
-//                                + " node_id: " + Integer.toString(node_id)
-//                                + " succ_id: " + Integer.toString(this.Id));
+//            this.log(message);
         }
     }
 
     /*
      * Updates the predecessors and initiates the updating of all other nodes whose
      * finger tables might have changed as a result of the new node joining the system.
+     * Similar to the function "update_others" in the MIT paper.
      */
     public void update_as_pred(int node_id, int pred_id)
     {
-//        this.fingerTable[0] = new ProcessInfo(node_id,
-//                                              this.node0.portNumber+node_id,
-//                                              localhost);
-//        for (int i = 0; i < 7; i++)
-//            // TODO: Figure out whether the ft[i].id+1 is necessary.
-//            if (contains(this.ft_info[i+1].start, this.Id, this.fingerTable[i].Id+1))
-//                this.fingerTable[i+1] = this.fingerTable[i];
-
-//        this.fingerTable[0] = new ProcessInfo(node_id,
-//                                              this.node0.portNumber+node_id,
-//                                              localhost);
-
         ProcessInfo new_node = new ProcessInfo(node_id,
                                                this.node0.portNumber+node_id,
                                                localhost);
                                               
         for (int i = 0; i < 8; i++)
         {
-            // TODO: Figure out whether the ft[i].id+1 is necessary.
-//            if (contains(node_id, this.Id, this.fingerTable[i].Id))
-//            if (contains(this.ft_info[i].start, pred_id+1, node_id))
             if (contains(node_id, this.ft_info[i].start, this.fingerTable[i].Id))
             {
                 this.fingerTable[i] = new_node;
@@ -189,11 +209,9 @@ public class ServerNode extends Thread {
         String message;
         ProcessInfo receiver;
         int termination_id = ((pred_id - 127) + 256) % 256;
-//        System.out.println("node id: " + Integer.toString(node_id));
-//        System.out.println("termination id: " + Integer.toString(termination_id));
         if (contains(termination_id, this.pred.Id+1, this.Id+1)) {
-            // The 0 is irrelevant for now, it can be used to store other information
-            // later if necessary.
+            // The the 0 is place holder for tokens[1] in the receiving thread.
+            // It can be replaced with a useful number if necessary.
             message = "finished 0";
             receiver = new ProcessInfo(node_id,
                                        this.node0.portNumber+node_id,
@@ -205,9 +223,10 @@ public class ServerNode extends Thread {
                       + " " + Integer.toString(pred_id);
             receiver = this.pred;
         }
-//        this.delayGenerator();
+        this.delayGenerator();
         Runnable sender = new ClientSender(receiver, message);
         new Thread(sender).start();
+//        this.log(message);
     }
 
     /*
@@ -219,6 +238,7 @@ public class ServerNode extends Thread {
     public void update_as_successor(int node_id)
     {
         String duplicates = "";
+        // The successor's current duplicates will become the new node's duplicates.
         for (int i = 0; i < 256; i++)
         {
             if (this.duplicates[i])
@@ -227,6 +247,8 @@ public class ServerNode extends Thread {
                 this.duplicates[i] = false;
             }
         }
+        // The successor will lose some keys to the new node. The keys that it
+        // loses will not become its duplicates.
         for (int j = this.pred.Id+1; j % 256 != (node_id + 1) % 256 ; j++)
         { 
             this.keys[j % 256] = false;
@@ -234,14 +256,18 @@ public class ServerNode extends Thread {
         }
 
         // Notify the current predecessor to update its successor to the newly joined node.
-        // TODO: find out if possible to update successor and predecessor's ft with these messages.
         int old_pred_id = this.pred.Id;
         String update_message = "p"
                                 + " " + Integer.toString(node_id)
                                 + " " + Integer.toString(this.pred.Id);
-//        this.delayGenerator();
+        this.mutex.lock();
+        this.ack_count++;
+        this.mutex.unlock();
+
+        this.delayGenerator();
         Runnable update_sender = new ClientSender(this.pred, update_message);
         new Thread(update_sender).start();
+//        this.log(update_message);
 
         // Update predecessor to the newly joined node.
         this.pred = new ProcessInfo(node_id,
@@ -249,17 +275,6 @@ public class ServerNode extends Thread {
                                     localhost);
         if (old_pred_id == this.Id)
             this.fingerTable[0] = this.pred;
-
-        // Update the successor's finger table while we're at it.
-//        for (int i = 0; i < 7; i++)
-//        {
-//            // TODO: Figure out whether the ft[i].id+1 is necessary.
-//            // Tried changing this to this.pred.Id, don't think its right though.
-//            if (contains(this.pred.Id, this.Id, this.fingerTable[i].Id+1))
-//                this.fingerTable[i+1] = this.pred;
-//            if (contains(this.Id, this.ft_info[i+1].start, this.fingerTable[i].Id+1))
-//                this.fingerTable[i+1] = this.self_info;
-//        }
 
         // Gives new node its predecessor's id, successor's id,
         // successor's finger table, and successor's original duplicates.
@@ -275,21 +290,20 @@ public class ServerNode extends Thread {
                         + "," + Integer.toString(this.fingerTable[6].Id)
                         + "," + Integer.toString(this.fingerTable[7].Id)
                         + duplicates;
-//        this.delayGenerator();
+        this.delayGenerator();
         Runnable sender = new ClientSender(this.pred, message);
         new Thread(sender).start();
+//        this.log(message);
     }
 
-    // Find the closest node that is less than node_id.
+    /*
+     * Find the closest node that is less than node_id.
+     */
     public ProcessInfo closest_preceding_finger(int node_id)
     {
-//        for (int i = 7; i >= 0; i--)
-//            if (this.ft_info[i].contains(this.fingerTable[i].Id))
-//                return this.fingerTable[i];
         for (int i = 7; i >= 0; i--)
             if (contains(this.fingerTable[i].Id, this.Id+1, node_id))
                 return this.fingerTable[i];
-        // TODO: Figure out if this is necessary.
         return this.fingerTable[0];
     }
 
@@ -315,13 +329,8 @@ public class ServerNode extends Thread {
         // optimizations later on.
         for (int i = 0; i < 7; i++)
         {
-            // TODO: Figure out whether the ft[i].id+1 is necessary.
             if (contains(this.ft_info[i+1].start, this.Id, this.fingerTable[i].Id+1))
             {
-//                System.out.println("my id: " + Integer.toString(this.Id)
-//                                    + " start: " + Integer.toString(node_id)
-//                                    + " value: " + Integer.toString(this.fingerTable[i].Id)
-//                                    + " end: " + Integer.toString(this.ft_info[i+1].start));
                 this.fingerTable[i+1] = this.fingerTable[i];
             }
             else
@@ -330,28 +339,26 @@ public class ServerNode extends Thread {
                 // start is the thing we want the successor for.
                 // ft index is the index in which we will store our returned value.
                 // node_id is so that the successor knows where to send its id.
+                this.mutex.lock();
+                this.ack_count++;
+                this.mutex.unlock();
                 String message = "i"
                                 + " " + this.ft_info[i+1].start
                                 + " " + Integer.toString(i+1)
                                 + " " + Integer.toString(this.Id);
-//                this.delayGenerator();
+                this.delayGenerator();
                 Runnable sender = new ClientSender(node0, message);
                 new Thread(sender).start();
+//                this.log(message);
             }
-//                System.out.println("my id: " + Integer.toString(this.Id)
-//                                    + " start: " + Integer.toString(node_id)
-//                                    + " end: " + Integer.toString(this.fingerTable[i].Id)
-//                                    + " value: " + Integer.toString(this.ft_info[i+1].start));
         }
         // Update the keys.
         for (int j = pred_id+1; j % 256 != (this.Id + 1) % 256 ; j++)
             this.keys[j % 256] = true;
+        for (int l = 0; l < 256; l++)
+            this.duplicates[l] = false;
         for (int k = 4; k < tokens.length; k++)
             this.duplicates[Integer.parseInt(tokens[k])] = true;
-        // TODO: remove this once finger table updating is implemented.
-        // This ACK should actually be sent after all other nodes are finished updating
-        // their finger tables.
-//        this.ack_sender("A");
     }
 
     /*
@@ -364,29 +371,6 @@ public class ServerNode extends Thread {
         this.fingerTable[index] = new ProcessInfo(succ_id,
                                                   this.node0.portNumber+succ_id,
                                                   localhost);
-//        System.out.println("New FT at " + Integer.toString(this.Id));
-//        for (int i = 0; i < 8; i++)
-//            System.out.println(Integer.toString(i) + ": " + Integer.toString(this.fingerTable[i].Id));
-//        System.out.println("Pred: " + Integer.toString(this.pred.Id));
-    }
-
-    public void update_others(int node_id)
-    {
-        // An idea: in order to wait for all other nodes to update, send the update message,
-        // the last node to update should send a message back here, so wait until you receive
-        // that message to send the ACK to the client. This assumes that this node's ft has
-        // already been updated and that key transferring is complete.
-        ProcessInfo new_node = new ProcessInfo(node_id,
-                                               this.node0.portNumber+node_id,
-                                               localhost);
-        // Update this.fingerTable[...]
-        for (int i = 0; i < 8; i++)
-        {
-            if (this.fingerTable[i].Id >= node_id)
-                this.fingerTable[i] = new_node;
-            else
-                break;
-        }
     }
 	
     /*
@@ -410,30 +394,35 @@ public class ServerNode extends Thread {
                           + "," + this.fingerTable[6].Id
                           + "," + this.fingerTable[7].Id
                           + "\n" + "Keys:" + keys + "\n";
-                          // temp remove this after
 //                          + "pred: " + Integer.toString(this.pred.Id) + "\n";
         this.ack_sender(response);
     }
 
-    
+    /*
+     * Checks if it has key. If not, forwards the request to the closest preceding
+     * node to key in its finger table. If it does, it sends a "found" response to
+     * the node that initiated the request so that it can send an ack to the client.
+     */ 
     public void find(int node_id, int key)
     {
+        String message;
+        ProcessInfo nextNode = null;
         if(keys[key%256] == true)
         {
-            String message = "find " + this.Id;
-            ack_sender(message);
+            message = "found " + Integer.toString(this.Id);
+            nextNode = new ProcessInfo(node_id,
+                                       this.node0.portNumber+node_id,
+                                       localhost);
         }
         else
         {
-            ProcessInfo nextNode = this.closest_preceding_finger(node_id);
-            
-            String message = "find " + node_id + " " + key+ " " + client.portNumber ;
-            this.delayGenerator();
-            Runnable sender = new ClientSender(nextNode, message);
-            new Thread(sender).start();
-            
+            nextNode = this.closest_preceding_finger(key);
+            message = "find " + node_id + " " + key+ " " + client.portNumber ;
         }
-        
+        this.delayGenerator();
+        Runnable sender = new ClientSender(nextNode, message);
+        new Thread(sender).start();
+//        this.log(message);
     }
 
 	//handles received messages
@@ -447,7 +436,6 @@ public class ServerNode extends Thread {
 //        System.out.println("Server " + Integer.toString(this.Id) + " received: " + message);
         String[] tokens = message.split(" ");
         String action = tokens[0];
-//        System.out.println("message: " + message);
         int node_id = Integer.parseInt(tokens[1]);
         switch (action) {
             case "join":
@@ -456,10 +444,9 @@ public class ServerNode extends Thread {
             case "crash":
                 break;
             case "find":
-                int node = Integer.parseInt(tokens[1]);
                 int key = Integer.parseInt(tokens[2]);
                 client = new ProcessInfo(-1, Integer.parseInt(tokens[3]) , localhost);
-                this.find(node, key);
+                this.find(node_id, key);
                 break;
             case "show":
                 nodeShow(node_id, tokens);
@@ -472,21 +459,41 @@ public class ServerNode extends Thread {
                 break;
             case "u":
                 this.update_ft_entry(tokens);
+                this.mutex.lock();
+                this.ack_count--;
+                // All updates are complete.
+                if (this.ack_count == -1)
+                {
+//                    log("ACK sent!");
+                    this.ack_sender("A");
+                }
+                this.mutex.unlock();
                 break;
             case "successor":
-//                System.out.println("my id: " + Integer.toString(this.Id));
                 this.update_ft(node_id, tokens);
                 break;
             case "p":
                 this.update_as_pred(node_id, Integer.parseInt(tokens[2]));
                 break;
             case "finished":
-                this.ack_sender("A");
+                this.mutex.lock();
+                this.ack_count --;
+                // All updates are complete.
+                if (this.ack_count == -1)
+                {
+//                    log("ACK sent!");
+                    this.ack_sender("A");
+                }
+                this.mutex.unlock();
+                break;
+            case "found":
+                ack_sender(tokens[1]);
+                break;
         }
 	}
 
     /*
-     * Sends a simple acknowledgement to the client.
+     * Sends an acknowledgement to the client.
      */
     public void ack_sender(String ack)
     {
@@ -516,36 +523,16 @@ public class ServerNode extends Thread {
 	            e.printStackTrace();
 	            break;
 	         } catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 	      }
 	   }
 	
+    /*
+     * Can be used for testing. 
+     */
 	public static void main(String args[]) throws InterruptedException
 	{
-//		 try
-//	      {
-//	    	 int port = Integer.parseInt(args[0]);
-//	         int Id = Integer.parseInt(args[1]);
-//	         //starts the server
-//	    	 ServerNode receiver = new ServerNode(Id, port);
-//	         receiver.start();
-//	    
-//	         Map<Integer, ProcessInfo> fingers = new HashMap<Integer, ProcessInfo>();
-//	         fingers.put(80, new ProcessInfo(80, 1231, InetAddress.getLocalHost()));
-//	         fingers.put(81, new ProcessInfo(81, 1233, InetAddress.getLocalHost()));
-//	         fingers.put(82, new ProcessInfo(82, 1234, InetAddress.getLocalHost()));
-//	         
-//	         ProcessInfo test = new ProcessInfo(Id, port, InetAddress.getLocalHost());
-//	         Thread.sleep(2000);
-//	         receiver.Send( test, fingers);
-//	       
-//	      }
-//	      catch(IOException e)
-//	      {
-//	         e.printStackTrace();
-//	      }
 	}
 
     /* 

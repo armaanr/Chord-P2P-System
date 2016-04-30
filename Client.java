@@ -5,6 +5,7 @@ import java.io.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+
 public class Client extends Thread
 {
     // Information from configuration file.
@@ -106,22 +107,14 @@ public class Client extends Thread
         	int node_id = Integer.parseInt(tokens[1]);
         	int key = Integer.parseInt(tokens[2]);
         	
-        	ProcessInfo targetNode = null;
-        	if(nodes.containsKey(node_id))
-        	{
-        		targetNode = nodes.get(node_id);
-        	}
-        	else
-        	{
-        		System.out.println(node_id + "does not exist");
-        	}
-        	
+            this.mutex.lock();
+        	ProcessInfo targetNode = nodes.get(node_id);
+
             // Adding Node 0 information.
             String message = "find"
                              + " " + node_id
                              + " " + key;
-            this.mutex.lock();
-            if (!this.need_ack) {
+            if (!this.need_ack && targetNode != null && targetNode.alive) {
                 this.find(targetNode, message);
             }
             else {
@@ -213,7 +206,6 @@ public class Client extends Thread
         // and need_ack remains false.
         this.mutex.lock();
         this.need_ack = false;
-//        try{
             if (!this.Q.isEmpty()) {
                 message = this.Q.poll();
                 String[] tokens = message.split(" ");
@@ -227,17 +219,16 @@ public class Client extends Thread
                         System.out.println(node_id + " crashed.");
                         break;
                     case "find":
-                        System.out.println("Found the key in Node =>" + node_id);
+                        ProcessInfo nextnode = this.nodes.get(node_id);
+                        if (nextnode == null || !nextnode.alive)
+                            System.out.println("Node " + node_id + "does not exist.");
+                        else
+                            this.find(nextnode, message);
                         break;
                     case "show":
                         this.show(node_id, tokens[2]);
-                        break;
                 }
             }
-//        }
-//        catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
         this.mutex.unlock();
 
         System.out.println(ack);
@@ -277,9 +268,9 @@ public class Client extends Thread
      */
     public void crash(ProcessInfo node, String message)
     {
+        this.need_ack = true;
         Runnable sender = new ClientSender(node, message);
         new Thread(sender).start();
-        this.need_ack = true;
     }
     /*
      * Finds the node with the specified key.
@@ -287,9 +278,9 @@ public class Client extends Thread
     public void find(ProcessInfo node , String message)
     {
     	message += " " + this.self_info.portNumber;
+        this.need_ack = true;
         Runnable sender = new ClientSender(node, message);
         new Thread(sender).start();
-        this.need_ack = true;
     }
 
     /* 
@@ -340,6 +331,11 @@ public class Client extends Thread
 
             // Reads until the end of the stream or user enters "exit"
             while((i = System.in.read()) != -1)
+
+            // Uncomment these lines and comment the above line to read commands 
+            // from a file. this was used to automate the tests for the report.
+//            FileInputStream infile = new FileInputStream("commands.txt");
+//            while((i = infile.read()) != -1)
             {
                 c = (char) i;
 
