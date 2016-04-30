@@ -77,20 +77,20 @@ public class ServerNode extends Thread {
     
     public void ping()
     {
-        System.out.println("Starting pinger for " +this.Id+ "with new pred => "+this.pred.Id);
+        //        System.out.println("Starting pinger for " +this.Id+ "with new pred => "+this.pred.Id);
         this.failChecker = new Pinger(this.pred, this.self_info);
         this.failChecker.start();
         
     }
     
     private void failDetectHandler() {
-        System.out.println("entered failure detecter in "+ this.Id);
+        //        System.out.println("entered failure detecter in "+ this.Id);
         int crashedId = pred.Id;
         this.failStarter = true;
-        System.out.println("Crashed => " + crashedId);
+        //        System.out.println("Crashed => " + crashedId);
         
         int newPredecessorId = newPredFinder(crashedId);
-        System.out.println("switched pre to "+ newPredecessorId);
+        //        System.out.println("switched pre to "+ newPredecessorId);
         for(int i = newPredecessorId+1 ; i < (crashedId+1)%256; i++)
         {
             this.keys[i] = true;
@@ -101,6 +101,7 @@ public class ServerNode extends Thread {
         this.failChecker.interrupt();
         ping();
         
+        delayGenerator();
         String message = "fail " + crashedId + " " + this.Id + " " + this.pred.Id ;
         Runnable send = new ClientSender(this.pred, message);
         new Thread(send).start();
@@ -116,6 +117,7 @@ public class ServerNode extends Thread {
         }
         else
         {
+            delayGenerator();
             String succMessage = "dupsUpdate "+ this.pred.Id + " "+ crashedId + " false";
             Runnable send2 = new ClientSender(this.fingerTable[0], succMessage);
             new Thread(send2).start();
@@ -124,7 +126,7 @@ public class ServerNode extends Thread {
     
     public void dupsUpdate(int start, int end, boolean delPrev )
     {
-        System.out.println("updating dups between " + start + " and "+end+" in "+this.Id);
+        //        System.out.println("updating dups between " + start + " and "+end+" in "+this.Id);
         boolean zeroNodeRelated = false;
         
         if(start >= end)
@@ -166,7 +168,7 @@ public class ServerNode extends Thread {
         {
             if(this.duplicates[i] == false)
             {
-                System.out.println("duplicate looked at = " + i);
+                //                System.out.println("duplicate looked at = " + i);
                 newPredecessorId = i;
                 break;
             }
@@ -178,7 +180,7 @@ public class ServerNode extends Thread {
     
     public void crashUpdater(int crashId, int replace, int crashPred)
     {
-        System.out.println("entered crash updater in "+ this.Id);
+        //        System.out.println("entered crash updater in "+ this.Id);
         
         for(int i = 0; i< fingerTable.length ; i++)
         {
@@ -190,7 +192,7 @@ public class ServerNode extends Thread {
         
         if(this.failStarter) // || ( (this.Id+128)%256 <= crashPred ) )
         {
-            System.out.println("reached failStarter");
+            //            System.out.println("reached failStarter");
             this.failStarter = false;
             String message = "crash" + crashId;
             ack_sender(message);
@@ -200,12 +202,14 @@ public class ServerNode extends Thread {
         
         if(this.Id == crashPred)
         {
+            delayGenerator();
             String succMessage = "dupsUpdate "+ this.pred.Id + " "+ this.Id+ " true";
             Runnable send2 = new ClientSender(this.fingerTable[0], succMessage);
             new Thread(send2).start();
         }
         
         try {
+            delayGenerator();
             Socket sock = new Socket(this.pred.IP, this.pred.portNumber);
             String message = "fail " + crashId + " "+ replace + " " + crashPred;
             DataOutputStream failSend = new DataOutputStream(sock.getOutputStream());
