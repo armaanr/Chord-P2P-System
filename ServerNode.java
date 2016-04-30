@@ -351,12 +351,28 @@ public class ServerNode extends Thread {
             }
         }
         // The successor will lose some keys to the new node. The keys that it
-        // loses will not become its duplicates.
+        // loses will now become its duplicates.
         for (int j = this.pred.Id+1; j % 256 != (node_id + 1) % 256 ; j++)
         {
             this.keys[j % 256] = false;
             this.duplicates[j % 256] = true;
         }
+
+        // The successor's final keys become the super successor's duplicates.
+        String super_successor_duplicates = "";
+        for (int k = 0; k < 256; k++)
+            if (this.keys[k])
+                super_successor_duplicates += " " + Integer.toString(k);
+
+        // Need to update super successor's duplicates as well.
+        if (!(this.Id == 0 && this.pred.Id == 0))
+        {
+            String update_super_message = "dups"+ super_successor_duplicates;
+            this.delayGenerator();
+            Runnable update_super = new ClientSender(this.fingerTable[0], update_super_message);
+            new Thread(update_super).start();
+    //        this.log(super_successor_duplicates);
+         }
         
         // Notify the current predecessor to update its successor to the newly joined node.
         int old_pred_id = this.pred.Id;
@@ -465,7 +481,8 @@ public class ServerNode extends Thread {
         for (int l = 0; l < 256; l++)
             this.duplicates[l] = false;
         for (int k = 4; k < tokens.length; k++)
-            this.duplicates[Integer.parseInt(tokens[k])] = true;
+            if (!this.keys[Integer.parseInt(tokens[k])])
+                this.duplicates[Integer.parseInt(tokens[k])] = true;
     }
     
     /*
@@ -504,7 +521,8 @@ public class ServerNode extends Thread {
                           + "," + this.fingerTable[5].Id
                           + "," + this.fingerTable[6].Id
                           + "," + this.fingerTable[7].Id
-                          + "\n" + "Keys:" + keys + "\n";
+                          + "\n" + "Keys:" + keys + "\n"
+                          + "Duplicates:" + duplicates + "\n";
 //                          + "pred: " + Integer.toString(this.pred.Id) + "\n";
         this.ack_sender(response);
     }
@@ -546,7 +564,6 @@ public class ServerNode extends Thread {
         
         Socket receiver = server.accept();
         
->>>>>>> 5da72e3b7709866645b144e6eecf584425e712aa
         DataInputStream input = new DataInputStream(receiver.getInputStream());
         String message = "";
         message = input.readUTF();
@@ -624,10 +641,24 @@ public class ServerNode extends Thread {
             case "found":
                 ack_sender(tokens[1]);
                 break;
+            case "dups":
+                this.update_duplicates(tokens);
+                break;
         }
         
         receiver.close();
         
+    }
+
+    /*
+     * Updates duplicates to values in the given array.
+     */
+    public void update_duplicates(String[] duplicates)
+    {
+        for (int i = 0; i < 256; i++)
+            this.duplicates[i] = false;
+        for (int k = 1; k < duplicates.length; k++)
+            this.duplicates[Integer.parseInt(duplicates[k])] = true;
     }
     
     /*
