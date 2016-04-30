@@ -595,9 +595,9 @@ public class ServerNode extends Thread {
         + "," + this.fingerTable[5].Id
         + "," + this.fingerTable[6].Id
         + "," + this.fingerTable[7].Id
-        + "\n" + "Keys:" + keys + "\n"
-        + "Duplicates:" + duplicates + "\n"
-        +"pred: " + Integer.toString(this.pred.Id) + "\n";
+        + "\n" + "Keys:" + keys + "\n";
+//        + "Duplicates:" + duplicates + "\n"
+//        +"pred: " + Integer.toString(this.pred.Id) + "\n";
         this.ack_sender(response);
     }
     
