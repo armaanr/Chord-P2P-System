@@ -191,6 +191,7 @@ public class ServerNode extends Thread {
         if(this.failStarter) // || ( (this.Id+128)%256 <= crashPred ) )
         {
             System.out.println("reached failStarter");
+            this.failStarter = false;
             String message = "crash" + crashId;
             ack_sender(message);
             return;
